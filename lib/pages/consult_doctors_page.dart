@@ -11,6 +11,14 @@ class ConsultDoctorsPage extends StatelessWidget {
     {'icon': Icons.health_and_safety, 'label': 'Kidney'},
     {'icon': Icons.remove_red_eye, 'label': 'Eye'},
     {'icon': Icons.hearing, 'label': 'Ear'},
+    {'icon': Icons.psychology, 'label': 'Brain'},
+    {'icon': Icons.health_and_safety, 'label': 'Kidney'},
+    {'icon': Icons.remove_red_eye, 'label': 'Eye'},
+    {'icon': Icons.hearing, 'label': 'Ear'},
+    {'icon': Icons.psychology, 'label': 'Brain'},
+    {'icon': Icons.health_and_safety, 'label': 'Kidney'},
+    {'icon': Icons.remove_red_eye, 'label': 'Eye'},
+    {'icon': Icons.hearing, 'label': 'Ear'},
   ];
 
   final List<Map<String, dynamic>> doctors = const [
@@ -18,13 +26,13 @@ class ConsultDoctorsPage extends StatelessWidget {
       'name': 'Dr. Sneha Nu',
       'specialty': 'Cardiologist',
       'rating': 4.8,
-      'image': 'https://via.placeholder.com/150',
+      'image': 'assets/dokter1.jpg',
     },
     {
       'name': 'Dr. Vargo Ho',
       'specialty': 'Neurologist',
       'rating': 4.6,
-      'image': 'https://via.placeholder.com/150',
+      'image': 'assets/dokter2.jpg',
     },
   ];
 
