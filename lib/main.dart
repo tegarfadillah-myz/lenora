@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
-import 'pages/consult_doctors_page.dart';
+import 'screens/article_page.dart'; // ✅ import screen baru
 
 void main() {
-  runApp(const ConsultDoctorsApp());
+  runApp(const MyApp());
 }
 
-class ConsultDoctorsApp extends StatelessWidget {
-  const ConsultDoctorsApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Consult Doctors',
+      title: 'Artikel Kesehatan',
       theme: ThemeData(
-        fontFamily: 'Roboto',
-        primarySwatch: Colors.purple,
+        brightness: Brightness.light,
+        primarySwatch: Colors.blue,
+        fontFamily: 'Poppins',
       ),
-      home: const ConsultDoctorsPage(),
+      home: const ArticlePage(), // ✅ gunakan screen dari folder
       debugShowCheckedModeBanner: false,
     );
   }
