@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Consult Doctors',
       theme: ThemeData(
-        fontFamily: 'Roboto',
+        fontFamily: 'Poppins',
         primarySwatch: Colors.purple,
       ),
       home: SplashScreen(nextScreen: HomePage()),
