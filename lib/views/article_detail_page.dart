@@ -23,8 +23,7 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
   int shares = 5;
   bool isBookmarked = false;
 
-  // Use localhost for all platforms since we're in web environment
-  final String baseUrl = 'http://10.0.2.2:8000';
+  final String baseUrl = 'http://192.168.18.9:8000';
 
   @override
   void initState() {
@@ -39,7 +38,7 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
-        print('API Response: $data'); // Debug print
+        print('API Response: $data');
         setState(() {
           articleDetail = data['data'];
           isLoading = false;
@@ -82,153 +81,146 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
     }
 
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Color(0xFF0F2D52)),
+          onPressed: () => Navigator.pop(context),
+        ),
+        centerTitle: true,
+        title: const Text(
+          'DETAIL ARTIKEL',
+          style: TextStyle(
+            color: Color(0xFF0F2D52),
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
+        ),
+      ),
       body: Stack(
         children: [
           // Full-height blue background
           Positioned.fill(
             child: Container(color: const Color(0xFF1E293B)),
           ),
-          Column(
-            children: [
-              // White section at top
-              Container(
-                color: Colors.white,
-                child: SafeArea(
-                  bottom: false,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Header
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 12),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.arrow_back),
-                              onPressed: () => Navigator.pop(context),
-                            ),
-                            const Text(
-                              'Nama Pengguna',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                            const CircleAvatar(
-                              radius: 18,
-                              backgroundColor: Colors.black12,
-                              child: Icon(Icons.person, color: Colors.black),
-                            ),
-                          ],
-                        ),
-                      ),
-                      // Title
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
-                        child: Text(
-                          articleDetail?['name'] ?? '',
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                      // Divider
-                      const SizedBox(height: 8),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
-                        child: Container(
-                          height: 1,
-                          color: Colors.grey[300],
-                        ),
-                      ),
-                      // Category and date
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
-                        child: Text(
-                          '${articleDetail?['category']?['name'] ?? ''} - ${_formatDate(articleDetail?['created_at'] ?? '')}',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Color(0xFF1C3F60),
-                          ),
-                        ),
-                      ),
-                      // Interaction icons
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
-                        child: Row(
-                          children: [
-                            _iconWithCount(Icons.favorite_border, likes),
-                            const SizedBox(width: 24),
-                            _iconWithCount(Icons.mode_comment_outlined, comments),
-                            const SizedBox(width: 24),
-                            _iconWithCount(Icons.share_outlined, shares),
-                            const Spacer(),
-                            IconButton(
-                              icon: Icon(
-                                isBookmarked ? Icons.bookmark : Icons.bookmark_border,
-                                color: Colors.grey[600],
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  isBookmarked = !isBookmarked;
-                                });
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              // Image section with white border
-              Container(
-                height: 280,
-                width: double.infinity,
-                decoration: const BoxDecoration(
+          // Make entire content scrollable
+          SingleChildScrollView(
+            child: Column(
+              children: [
+                // White section at top
+                Container(
                   color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(50),
-                    bottomRight: Radius.circular(50),
-                  ),
-                ),
-                padding: const EdgeInsets.all(10), // White border/stroke
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(40),
-                    bottomRight: Radius.circular(40),
-                  ),
-                  child: Image.network(
-                    getImageUrl(articleDetail?['thumbnail']),
-                    fit: BoxFit.cover,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Center(
-                        child: CircularProgressIndicator(
-                          value: loadingProgress.expectedTotalBytes != null
-                              ? loadingProgress.cumulativeBytesLoaded /
-                                  loadingProgress.expectedTotalBytes!
-                              : null,
+                  child: SafeArea(
+                    bottom: false,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Title
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          child: Text(
+                            articleDetail?['name'] ?? '',
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
                         ),
-                      );
-                    },
-                    errorBuilder: (context, error, stackTrace) {
-                      print('Image error: $error');
-                      print('Image URL: ${getImageUrl(articleDetail?['thumbnail'])}');
-                      return Container(
-                        color: Colors.grey[300],
-                        child: const Icon(Icons.broken_image, size: 50),
-                      );
-                    },
+                        // Divider
+                        const SizedBox(height: 8),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          child: Container(
+                            height: 1,
+                            color: Colors.grey[300],
+                          ),
+                        ),
+                        // Category and date
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          child: Text(
+                            '${articleDetail?['category']?['name'] ?? ''} - ${_formatDate(articleDetail?['created_at'] ?? '')}',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Color(0xFF1C3F60),
+                            ),
+                          ),
+                        ),
+                        // Interaction icons
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          child: Row(
+                            children: [
+                              _iconWithCount(Icons.favorite_border, likes),
+                              const SizedBox(width: 24),
+                              _iconWithCount(Icons.mode_comment_outlined, comments),
+                              const SizedBox(width: 24),
+                              _iconWithCount(Icons.share_outlined, shares),
+                              const Spacer(),
+                              IconButton(
+                                icon: Icon(
+                                  isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+                                  color: Colors.grey[600],
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    isBookmarked = !isBookmarked;
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              // Content section
-              Expanded(
-                child: SingleChildScrollView(
+                // Image section with white border
+                Container(
+                  height: 280,
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(50),
+                      bottomRight: Radius.circular(50),
+                    ),
+                  ),
+                  padding: const EdgeInsets.all(10),
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(40),
+                      bottomRight: Radius.circular(40),
+                    ),
+                    child: Image.network(
+                      getImageUrl(articleDetail?['thumbnail']),
+                      fit: BoxFit.cover,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Center(
+                          child: CircularProgressIndicator(
+                            value: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes!
+                                : null,
+                          ),
+                        );
+                      },
+                      errorBuilder: (context, error, stackTrace) {
+                        print('Image error: $error');
+                        print('Image URL: ${getImageUrl(articleDetail?['thumbnail'])}');
+                        return Container(
+                          color: Colors.grey[300],
+                          child: const Icon(Icons.broken_image, size: 50),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                // Content section
+                Padding(
                   padding: const EdgeInsets.all(24),
                   child: Text(
                     articleDetail?['content'] ?? '',
@@ -239,8 +231,10 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
                     ),
                   ),
                 ),
-              ),
-            ],
+                // Add bottom padding for better scrolling experience
+                const SizedBox(height: 40),
+              ],
+            ),
           ),
         ],
       ),

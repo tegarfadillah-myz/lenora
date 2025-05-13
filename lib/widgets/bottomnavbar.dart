@@ -16,12 +16,15 @@ class BottomNavBar extends StatelessWidget {
     final Color inactiveIconColor = Colors.white;
     final Color navBarBgColor = const Color(0xFF1C3F60);
 
-    return Stack(
-      clipBehavior: Clip.none,
+    return Container(
+      height: 70,
+      margin: const EdgeInsets.only(bottom: 10),
+      child: Stack(
+      alignment: Alignment.bottomCenter,
       children: [
         // Bottom Navigation Bar
         Container(
-          margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 25),
+          margin: const EdgeInsets.symmetric(horizontal: 25),
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
           decoration: BoxDecoration(
             color: navBarBgColor,
@@ -55,7 +58,7 @@ class BottomNavBar extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 40),
+              const SizedBox(width: 20),
 
               // Artikel
               GestureDetector(
@@ -81,9 +84,47 @@ class BottomNavBar extends StatelessWidget {
                   ),
                 ),
               ),
-              
+
               // Spacer for center button
-              const SizedBox(width: 80),
+              const SizedBox(width: 20),
+
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ScanPage()),
+                  );
+                },
+                child: Container(
+                  width: 56,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Color(0xFFFF6B6B),
+                        Color(0xFFFF8E8E),
+                      ],
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.2),
+                        blurRadius: 8,
+                        offset: Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Icon(
+                    Icons.add,
+                    color: Colors.white,
+                    size: 30,
+                  ),
+                ),
+              ),
+
+              const SizedBox(width: 20),
 
               // Doctor
               GestureDetector(
@@ -110,7 +151,7 @@ class BottomNavBar extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(width: 40),
+              const SizedBox(width: 20),
 
               // Settings
               Container(
@@ -127,47 +168,14 @@ class BottomNavBar extends StatelessWidget {
         ),
 
         // Center Floating Scan Button
-        Positioned(
-          top: -25,
-          left: 0,
-          right: 0,
-          child: GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const ScanPage()),
-              );
-            },
-            child: Container(
-              width: 56,
-              height: 56,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Color(0xFFFF6B6B),
-                    Color(0xFFFF8E8E),
-                  ],
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
-                    blurRadius: 8,
-                    offset: Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Icon(
-                Icons.add,
-                color: Colors.white,
-                size: 30,
-              ),
-            ),
-          ),
-        ),
+        // Positioned(
+        //   top: 0,
+        //   left: 0,
+        //   right: 0,
+          
+        // ),
       ],
+    ),
     );
   }
 }

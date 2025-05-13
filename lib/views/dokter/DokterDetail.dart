@@ -105,8 +105,10 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
               border: Border.all(color: const Color(0xFF0F2D52), width: 3),
             ),
             child: ClipOval(
-              child: Image.asset(
-                dokter.foto,
+              child: Image.network(
+                dokter.foto.isNotEmpty
+                    ? 'http://192.168.18.9:8000/storage/${dokter.foto}'
+                    : 'https://via.placeholder.com/300x400',
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
                   return const Icon(Icons.person, size: 60, color: Colors.grey);

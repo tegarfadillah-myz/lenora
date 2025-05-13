@@ -151,7 +151,11 @@ class BayarDokterPage extends StatelessWidget {
                       children: [
                         CircleAvatar(
                           radius: 30,
-                          backgroundImage: AssetImage(dokter.foto),
+                          backgroundImage: NetworkImage(
+                            dokter.foto.isNotEmpty
+                                ? 'http://192.168.18.14:8000/storage/${dokter.foto}'
+                                : 'https://via.placeholder.com/300x400',
+                          ),
                         ),
                         const SizedBox(width: 12),
                         Expanded(

@@ -45,7 +45,7 @@ class DoctorCard extends StatelessWidget {
                 width: double.infinity,
                 child: Image.network(
                   dokter.foto.isNotEmpty
-                      ? 'http://127.0.0.1:8000/storage/${dokter.foto}'
+                      ? 'http://192.168.18.9:8000/storage/${dokter.foto}'
                       : 'https://via.placeholder.com/300x400',
                   fit: BoxFit.cover,
                   loadingBuilder: (context, child, loadingProgress) {
@@ -103,7 +103,7 @@ class DoctorCard extends StatelessWidget {
                       Text(
                         'Rp ${dokter.hargaKonsultasi}',
                         style: const TextStyle(
-                          fontSize: 14,
+                          fontSize: 12,
                           color: Colors.black87,
                         ),
                       ),
@@ -160,7 +160,7 @@ class _DoctorPageState extends State<DoctorPage> {
   Future<void> fetchDoctors() async {
     try {
       final response = await http.get(
-        Uri.parse('http://127.0.0.1:8000/api/dokter'),
+        Uri.parse('http://192.168.18.9:8000/api/dokter'),
       );
 
       if (response.statusCode == 200) {

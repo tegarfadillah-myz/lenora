@@ -17,7 +17,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   Future<List<Dokter>> fetchDokter() async {
     final response = await http.get(
-      Uri.parse('http://127.0.0.1:8000/api/dokter'),
+      Uri.parse('http://192.168.18.9:8000/api/dokter'),
     );
     if (response.statusCode == 200) {
       final List<dynamic> dokterJson = json.decode(response.body)['data'];
@@ -29,7 +29,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<List<Article>> fetchArtikel() async {
     final response = await http.get(
-      Uri.parse('http://127.0.0.1:8000/api/artikel'),
+      Uri.parse('http://192.168.18.9:8000/api/artikel'),
     );
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body)['data'];
@@ -235,7 +235,9 @@ class _HomePageState extends State<HomePage> {
                                               top: Radius.circular(12),
                                             ),
                                             child: Image.network(
-                                              dokter.foto,
+                                              dokter.foto.isNotEmpty
+                                                  ? 'http://192.168.18.9:8000/storage/${dokter.foto}'
+                                                  : 'https://via.placeholder.com/300x400',
                                               height: 120,
                                               width: double.infinity,
                                               fit: BoxFit.cover,
@@ -419,7 +421,9 @@ class _HomePageState extends State<HomePage> {
                                               top: Radius.circular(12),
                                             ),
                                             child: Image.network(
-                                              artikel.thumbnail,
+                                              artikel.thumbnail.isNotEmpty
+                                                  ? 'http://192.168.18.9:8000/storage/${artikel.thumbnail}'
+                                                  : 'https://via.placeholder.com/300x400',
                                               height: 100,
                                               width: double.infinity,
                                               fit: BoxFit.cover,

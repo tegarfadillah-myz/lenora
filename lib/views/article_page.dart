@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'article_detail_page.dart';
-import 'package:lenora/widgets/bottomnavbar.dart';
+import '../widgets/bottomnavbar.dart';
 
 class ArticlePage extends StatefulWidget {
   const ArticlePage({super.key});
@@ -13,7 +13,9 @@ class ArticlePage extends StatefulWidget {
 
 class _ArticlePageState extends State<ArticlePage> {
   List<Article> articles = [];
+  Set<Category> categories = {};
   String? errorMessage;
+  String? selectedCategory;
 
   @override
   void initState() {
@@ -21,10 +23,12 @@ class _ArticlePageState extends State<ArticlePage> {
     fetchArticles();
   }
 
+  List<Article> allArticles = [];
+
   Future<void> fetchArticles() async {
     try {
       final response = await http.get(
-        Uri.parse('http://127.0.0.1:8000/api/artikel'),
+        Uri.parse('http://192.168.18.9:8000/api/artikel'),
       );
 
       if (response.statusCode == 200) {
@@ -32,9 +36,29 @@ class _ArticlePageState extends State<ArticlePage> {
         final List<dynamic> data = responseData['data'];
 
         setState(() {
-          articles = data.map((json) => Article.fromJson(json)).toList();
+          // Store all articles
+          allArticles = data.map((json) => Article.fromJson(json)).toList();
+
+          // Extract unique categories from articles
+          categories =
+              allArticles
+                  .map(
+                    (article) => Category(
+                      id: int.parse(article.category.split(':')[0]),
+                      name: article.category.split(':')[1],
+                    ),
+                  )
+                  .toSet();
+
+          // Filter articles based on selected category
+          articles = filterArticles();
+
           errorMessage = null;
         });
+
+        print(
+          'Categories: ${categories.map((c) => '${c.id}: ${c.name}').toList()}',
+        );
       } else {
         setState(() {
           errorMessage =
@@ -49,6 +73,15 @@ class _ArticlePageState extends State<ArticlePage> {
     }
   }
 
+  List<Article> filterArticles() {
+    if (selectedCategory == null) {
+      return allArticles;
+    }
+    return allArticles
+        .where((article) => article.category.split(':')[0] == selectedCategory)
+        .toList();
+  }
+
   void _navigateToDetail(Article article) {
     Navigator.push(
       context,
@@ -60,35 +93,92 @@ class _ArticlePageState extends State<ArticlePage> {
 
   @override
   Widget build(BuildContext context) {
-    // Calculate the height of the custom app bar
     final double statusBarHeight = MediaQuery.of(context).padding.top;
-    final double appBarHeight =
-        statusBarHeight + 48; // Adjusted based on your header height
+    final double appBarHeight = statusBarHeight + 48;
 
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          // Main content - pushed down to make room for the header
           Positioned(
             top: appBarHeight,
             left: 0,
             right: 0,
             bottom: 0,
             child: SafeArea(
-              top: false, // Since we're handling the top padding manually
+              top: false,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 35),
                     const Text(
                       'Artikel Kesehatan',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+
+                    // Category Filter
+                    SizedBox(
+                      height: 40,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: categories.length + 1,
+                        itemBuilder: (context, index) {
+                          if (index == 0) {
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: FilterChip(
+                                label: const Text('Semua'),
+                                selected: selectedCategory == null,
+                                onSelected: (bool selected) {
+                                  setState(() {
+                                    selectedCategory = null;
+                                  });
+                                  fetchArticles();
+                                },
+                                backgroundColor: Colors.grey[200],
+                                selectedColor: const Color(0xFF0F2D52),
+                                labelStyle: TextStyle(
+                                  color:
+                                      selectedCategory == null
+                                          ? Colors.white
+                                          : Colors.black,
+                                ),
+                              ),
+                            );
+                          }
+
+                          final category = categories.elementAt(index - 1);
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 8),
+                            child: FilterChip(
+                              label: Text(category.name),
+                              selected:
+                                  selectedCategory == category.id.toString(),
+                              onSelected: (bool selected) {
+                                setState(() {
+                                  selectedCategory =
+                                      selected ? category.id.toString() : null;
+                                });
+                                fetchArticles();
+                              },
+                              backgroundColor: Colors.grey[200],
+                              selectedColor: const Color(0xFF0F2D52),
+                              labelStyle: TextStyle(
+                                color:
+                                    selectedCategory == category.id.toString()
+                                        ? Colors.white
+                                        : Colors.black,
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -135,7 +225,7 @@ class _ArticlePageState extends State<ArticlePage> {
             ),
           ),
 
-          // Custom header that spans the full width
+          // Custom header
           Positioned(
             top: 0,
             left: 0,
@@ -186,27 +276,21 @@ class _ArticlePageState extends State<ArticlePage> {
                           Icons.chat_rounded,
                           color: Colors.white,
                         ),
-                        onPressed: () {
-                          // TODO: Arahkan ke halaman keranjang
-                        },
+                        onPressed: () {},
                       ),
                       IconButton(
                         icon: const Icon(
                           Icons.shopping_cart,
                           color: Colors.white,
                         ),
-                        onPressed: () {
-                          // TODO: Arahkan ke halaman keranjang
-                        },
+                        onPressed: () {},
                       ),
                       IconButton(
                         icon: const Icon(
                           Icons.account_circle,
                           color: Colors.white,
                         ),
-                        onPressed: () {
-                          // TODO: Arahkan ke halaman profil
-                        },
+                        onPressed: () {},
                       ),
                     ],
                   ),
@@ -219,6 +303,24 @@ class _ArticlePageState extends State<ArticlePage> {
       bottomNavigationBar: BottomNavBar(currentIndex: 1),
     );
   }
+}
+
+class Category {
+  final int id;
+  final String name;
+
+  Category({required this.id, required this.name});
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Category &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          name == other.name;
+
+  @override
+  int get hashCode => id.hashCode ^ name.hashCode;
 }
 
 class Article {
@@ -240,14 +342,15 @@ class Article {
     final String thumbnail = json['thumbnail'] ?? '';
     final String imageUrl =
         thumbnail.isNotEmpty
-            ? 'http://127.0.0.1:8000/storage/$thumbnail'
+            ? 'http://192.168.18.9:8000/storage/$thumbnail'
             : 'https://via.placeholder.com/300x200';
 
-    print('Image URL: $imageUrl'); // Untuk debugging
+    final categoryId = json['category']?['id'] ?? 0;
+    final categoryName = json['category']?['name'] ?? 'Uncategorized';
 
     return Article(
       id: json['id'] ?? 0,
-      category: json['category']?['name'] ?? 'Uncategorized',
+      category: '$categoryId:$categoryName',
       title: json['name'] ?? 'No Title',
       date: (json['created_at'] ?? '').substring(0, 10),
       imageUrl: imageUrl,
@@ -313,7 +416,7 @@ class ArticleCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            article.category,
+            article.category.split(':')[1], // Display only category name
             style: const TextStyle(fontSize: 12, color: Colors.black54),
           ),
           const SizedBox(height: 4),
