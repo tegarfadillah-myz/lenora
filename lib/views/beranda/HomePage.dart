@@ -369,6 +369,7 @@ class _HomePageState extends State<HomePage> {
                               child: Text('Gagal memuat data artikel'),
                             );
                           } else {
+                            
                             final artikelList = snapshot.data!;
                             // Hanya tampilkan 5 artikel pertama
                             final displayedArticles =
@@ -387,6 +388,7 @@ class _HomePageState extends State<HomePage> {
                                 separatorBuilder:
                                     (_, __) => SizedBox(width: 12),
                                 itemBuilder: (context, index) {
+                                  
                                   final artikel = displayedArticles[index];
                                   return GestureDetector(
                                     onTap: () {
@@ -424,7 +426,7 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                             child: Image.network(
                                               artikel.thumbnail.isNotEmpty
-                                                  ? 'http://192.168.18.9:8000/storage/${artikel.thumbnail}'
+                                                  ? 'http://192.168.18.14:8000/storage/${artikel.thumbnail}'
                                                   : 'https://via.placeholder.com/300x400',
                                               height: 100,
                                               width: double.infinity,
@@ -451,7 +453,7 @@ class _HomePageState extends State<HomePage> {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  artikel.name,
+                                                  '${artikel.name.substring(0, artikel.name.length > 15 ? 15 : artikel.name.length)}${artikel.name.length > 15 ? '...' : ''}',
                                                   style: TextStyle(
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: 14,
