@@ -24,7 +24,7 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
   bool isBookmarked = false;
 
   // Use localhost for all platforms since we're in web environment
-  final String baseUrl = 'http://127.0.0.1:8000';
+  final String baseUrl = 'http://192.168.18.14:8000';
 
   @override
   void initState() {

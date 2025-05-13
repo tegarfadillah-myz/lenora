@@ -6,7 +6,7 @@ import 'package:lenora/models/article.dart';
 
 
 class ApiService {
-  static const String baseUrl = 'http://127.0.0.1:8000/api';
+  static const String baseUrl = 'http://192.168.18.14:8000/api';
 
   Future<List<Article>> fetchArticles() async {
     final response = await http.get(Uri.parse('$baseUrl/artikel'));
