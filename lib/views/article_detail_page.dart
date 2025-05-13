@@ -23,7 +23,7 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
   int shares = 5;
   bool isBookmarked = false;
 
-  final String baseUrl = 'http://192.168.18.9:8000';
+  final String baseUrl = 'http://192.168.18.14:8000';
 
   @override
   void initState() {
