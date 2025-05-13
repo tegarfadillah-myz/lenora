@@ -43,9 +43,25 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     final produk = widget.produk;
 
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Color(0xFF0F2D52)),
+          onPressed: () => Navigator.pop(context),
+        ),
+        centerTitle: true,
+        title: const Text(
+          'DETAIL PRODUK',
+          style: TextStyle(
+            color: Color(0xFF0F2D52),
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
+        ),
+      ),
       body: Column(
         children: [
-          _buildAppBar(),
           Expanded(
             child: SingleChildScrollView(
               child: Column(
@@ -65,43 +81,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     );
   }
 
-  Widget _buildAppBar() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      color: Colors.white,
-      child: SafeArea(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                const BackButton(color: Colors.black),
-                const SizedBox(width: 8),
-                const Text(
-                  'DETAIL PRODUK',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-              ],
-            ),
-            IconButton(
-              icon: Icon(
-                isFavorite ? Icons.favorite : Icons.favorite_border,
-                color: isFavorite ? Colors.red : Colors.black54,
-              ),
-              onPressed: () {
-                setState(() {
-                  isFavorite = !isFavorite;
-                });
-              },
-            )
-          ],
-        ),
-      ),
-    );
-  }
+ 
 
   Widget _buildProductImage(Produk produk) {
     return Container(
@@ -233,7 +213,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => CheckoutPage(produk: produk),
+                    builder: (context) => BayarProdukPage(produk: produk),
                   ),
                 );
               },

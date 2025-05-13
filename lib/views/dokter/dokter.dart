@@ -160,7 +160,9 @@ class _DoctorPageState extends State<DoctorPage> {
   Future<void> fetchDoctors() async {
     try {
       final response = await http.get(
-        Uri.parse('http://127.0.0.1:8000/api/dokter'),
+
+        Uri.parse('http://192.168.18.14:8000/api/dokter'),
+
       );
 
       if (response.statusCode == 200) {

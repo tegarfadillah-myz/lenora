@@ -296,7 +296,7 @@ class _ProductPageState extends State<ProductPage> {
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavBar(currentIndex: 0),
+      bottomNavigationBar: BottomNavBar(currentIndex: 3),
     );
   }
 }
