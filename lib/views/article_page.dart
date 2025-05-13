@@ -24,7 +24,7 @@ class _ArticlePageState extends State<ArticlePage> {
   Future<void> fetchArticles() async {
     try {
       final response = await http.get(
-        Uri.parse('http://192.168.18.14:8000/api/artikel'),
+        Uri.parse('http://127.0.0.1:8000/api/artikel'),
       );
 
       if (response.statusCode == 200) {
@@ -240,7 +240,7 @@ class Article {
     final String thumbnail = json['thumbnail'] ?? '';
     final String imageUrl =
         thumbnail.isNotEmpty
-            ? 'http://192.168.18.14:8000/storage/$thumbnail'
+            ? 'http://127.0.0.1:8000/storage/$thumbnail'
             : 'https://via.placeholder.com/300x200';
 
     print('Image URL: $imageUrl'); // Untuk debugging

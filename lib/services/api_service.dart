@@ -2,11 +2,12 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:lenora/models/dokter.dart';
 import 'package:lenora/models/article.dart';
+import 'package:lenora/models/produk.dart';
 
 
 
 class ApiService {
-  static const String baseUrl = 'http://192.168.18.14:8000/api';
+  static const String baseUrl = 'http://127.0.0.1:8000/api';
 
   Future<List<Article>> fetchArticles() async {
     final response = await http.get(Uri.parse('$baseUrl/artikel'));
@@ -47,6 +48,28 @@ class ApiService {
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       return Dokter.fromJson(data['data']);
+    } else {
+      throw Exception('Gagal memuat detail artikel');
+    }
+  }
+
+    Future<List<Produk>> fetchProduk() async {
+    final response = await http.get(Uri.parse('$baseUrl/produk'));
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final List produkJson = data['data'];
+      return produkJson.map((json) => Produk.fromJson(json)).toList();
+    } else {
+      throw Exception('Gagal memuat dokter');
+    }
+  }
+  Future<Produk> fetchProdukDetail(int id) async {
+    final response = await http.get(Uri.parse('$baseUrl/produk/$id'));
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return Produk.fromJson(data['data']);
     } else {
       throw Exception('Gagal memuat detail artikel');
     }

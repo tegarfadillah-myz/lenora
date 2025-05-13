@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../views/beranda/HomePage.dart';
 import '../views/article_page.dart';
 import '../views/dokter/dokter.dart';
+import '../views/produk/produk.dart';
 
 class BottomNavBar extends StatelessWidget {
   final int currentIndex;
@@ -101,6 +102,29 @@ class BottomNavBar extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 40),
+          GestureDetector(
+            onTap: () {
+              if (currentIndex != 3) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ProductPage()),
+                );
+              }
+            },
+            child: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: currentIndex == 3 ? activeBgColor : Colors.transparent,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.person_outline,
+                color: currentIndex == 3 ? activeIconColor : inactiveIconColor,
+                size: 20,
+              ),
+            ),
+          ),
 
           // Chat
           // Container(
@@ -115,15 +139,7 @@ class BottomNavBar extends StatelessWidget {
           // const SizedBox(width: 40),
 
           // Settings
-          Container(
-            width: 40,
-            height: 40,
-            child: Icon(
-              Icons.settings_outlined,
-              color: inactiveIconColor,
-              size: 20,
-            ),
-          ),
+         
         ],
       ),
     );
