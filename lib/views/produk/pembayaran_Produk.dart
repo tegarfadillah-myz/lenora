@@ -27,7 +27,7 @@ class CheckoutPage extends StatelessWidget {
       leading: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Image.asset('assets/Desain tanpa judul.png'),
-      ),git 
+      ),
       title: const Text(
         'SKINEXPERT',
         style: TextStyle(
