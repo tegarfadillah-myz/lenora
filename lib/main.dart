@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       title: 'Consult Doctors',
       theme: ThemeData(
         fontFamily: 'Poppins',
-        primarySwatch: Colors.purple,
+        primarySwatch: Colors.blue,
       ),
       home: SplashScreen(nextScreen: HomePage()),
       debugShowCheckedModeBanner: false,
