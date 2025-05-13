@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<List<Article>> fetchArtikel() async {
     final response = await http.get(
-      Uri.parse('http://192.168.18.14:8000/api/artikel'),
+      Uri.parse('http://127.0.0.1:8000/api/artikel'),
     );
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body)['data'];
@@ -238,7 +238,7 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                             child: Image.network(
                                               dokter.foto.isNotEmpty
-                                                  ? 'http://192.168.18.14:8000/storage/${dokter.foto}'
+                                                  ? 'http://127.0.0.1:8000/storage/${dokter.foto}'
                                                   : 'https://via.placeholder.com/300x400',
                                               height: 120,
                                               width: double.infinity,

@@ -45,7 +45,7 @@ class DoctorCard extends StatelessWidget {
                 width: double.infinity,
                 child: Image.network(
                   dokter.foto.isNotEmpty
-                      ? 'http://192.168.18.14:8000/storage/${dokter.foto}'
+                      ? 'http://127.0.0.1:8000/storage/${dokter.foto}'
                       : 'https://via.placeholder.com/300x400',
                   fit: BoxFit.cover,
                   loadingBuilder: (context, child, loadingProgress) {
