@@ -171,7 +171,7 @@ class BottomNavBar extends StatelessWidget {
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
-                    Icons.person_outline,
+                    Icons.add_shopping_cart_outlined,
                     color: currentIndex == 3 ? activeIconColor : inactiveIconColor,
                     size: 20,
                   ),
