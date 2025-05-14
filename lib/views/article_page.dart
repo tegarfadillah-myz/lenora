@@ -16,6 +16,7 @@ class _ArticlePageState extends State<ArticlePage> {
   Set<Category> categories = {};
   String? errorMessage;
   String? selectedCategory;
+  List<Article> allArticles = [];
 
   @override
   void initState() {
@@ -23,14 +24,10 @@ class _ArticlePageState extends State<ArticlePage> {
     fetchArticles();
   }
 
-  List<Article> allArticles = [];
-
   Future<void> fetchArticles() async {
     try {
       final response = await http.get(
-
-        Uri.parse('http://172.20.10.5:8000/api/artikel'),
-
+        Uri.parse('http://192.168.18.9:8000/api/artikel'),
       );
 
       if (response.statusCode == 200) {
@@ -38,10 +35,7 @@ class _ArticlePageState extends State<ArticlePage> {
         final List<dynamic> data = responseData['data'];
 
         setState(() {
-          // Store all articles
           allArticles = data.map((json) => Article.fromJson(json)).toList();
-
-          // Extract unique categories from articles
           categories =
               allArticles
                   .map(
@@ -51,10 +45,7 @@ class _ArticlePageState extends State<ArticlePage> {
                     ),
                   )
                   .toSet();
-
-          // Filter articles based on selected category
           articles = filterArticles();
-
           errorMessage = null;
         });
 
@@ -141,8 +132,8 @@ class _ArticlePageState extends State<ArticlePage> {
                                 onSelected: (bool selected) {
                                   setState(() {
                                     selectedCategory = null;
+                                    articles = filterArticles();
                                   });
-                                  fetchArticles();
                                 },
                                 backgroundColor: Colors.grey[200],
                                 selectedColor: const Color(0xFF0F2D52),
@@ -167,8 +158,8 @@ class _ArticlePageState extends State<ArticlePage> {
                                 setState(() {
                                   selectedCategory =
                                       selected ? category.id.toString() : null;
+                                  articles = filterArticles();
                                 });
-                                fetchArticles();
                               },
                               backgroundColor: Colors.grey[200],
                               selectedColor: const Color(0xFF0F2D52),
@@ -203,15 +194,9 @@ class _ArticlePageState extends State<ArticlePage> {
                                         )
                                         : const CircularProgressIndicator(),
                               )
-                              : GridView.builder(
+                              : ListView.builder(
                                 itemCount: articles.length,
-                                gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 2,
-                                      mainAxisSpacing: 16,
-                                      crossAxisSpacing: 16,
-                                      childAspectRatio: 0.65,
-                                    ),
+                                padding: const EdgeInsets.only(top: 8),
                                 itemBuilder: (context, index) {
                                   final article = articles[index];
                                   return ArticleCard(
@@ -344,7 +329,7 @@ class Article {
     final String thumbnail = json['thumbnail'] ?? '';
     final String imageUrl =
         thumbnail.isNotEmpty
-            ? 'http://172.20.10.5:8000/storage/$thumbnail'
+            ? 'http://192.168.18.9:8000/storage/$thumbnail'
             : 'https://via.placeholder.com/300x200';
 
     final categoryId = json['category']?['id'] ?? 0;
@@ -370,74 +355,112 @@ class ArticleCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Container(
-              height: 120,
-              width: double.infinity,
-              child: Image.network(
-                article.imageUrl,
-                fit: BoxFit.cover,
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return Container(
-                    color: Colors.grey[200],
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        value:
-                            loadingProgress.expectedTotalBytes != null
-                                ? loadingProgress.cumulativeBytesLoaded /
-                                    loadingProgress.expectedTotalBytes!
-                                : null,
-                      ),
-                    ),
-                  );
-                },
-                errorBuilder: (context, error, stackTrace) {
-                  print('Error loading image: $error');
-                  return Container(
-                    color: Colors.grey[300],
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Icon(Icons.broken_image, color: Colors.grey, size: 40),
-                        SizedBox(height: 4),
-                        Text(
-                          'Image not available',
-                          style: TextStyle(color: Colors.grey),
+      child: Container(
+        height: 230, // Fixed height for the card
+        margin: const EdgeInsets.only(bottom: 16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(12),
+              ),
+              child: SizedBox(
+                height: 120,
+                width: double.infinity,
+                child: Image.network(
+                  article.imageUrl,
+                  fit: BoxFit.cover,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return Container(
+                      color: Colors.grey[200],
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          value:
+                              loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      loadingProgress.expectedTotalBytes!
+                                  : null,
                         ),
-                      ],
-                    ),
-                  );
-                },
+                      ),
+                    );
+                  },
+                  errorBuilder: (context, error, stackTrace) {
+                    print('Error loading image: $error');
+                    return Container(
+                      color: Colors.grey[300],
+                      child: const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.broken_image,
+                            color: Colors.grey,
+                            size: 40,
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            'Image not available',
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            article.category.split(':')[1], // Display only category name
-            style: const TextStyle(fontSize: 12, color: Colors.black54),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            article.title,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      article.category.split(
+                        ':',
+                      )[1], // Display only category name
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.black54,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      article.title,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const Spacer(),
+                    Text(
+                      article.date,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.black45,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-            maxLines: 3,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 6),
-          Text(
-            article.date,
-            style: const TextStyle(fontSize: 12, color: Colors.black45),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

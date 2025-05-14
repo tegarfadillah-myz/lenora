@@ -5,7 +5,7 @@ import '../../models/dokter.dart';
 
 class BayarDokterPage extends StatelessWidget {
   final Dokter dokter;
-  final String baseUrl = 'http://172.20.10.5:8000';
+  final String baseUrl = 'http://192.168.18.9:8000';
   const BayarDokterPage({Key? key, required this.dokter}) : super(key: key);
 
   @override
@@ -153,7 +153,7 @@ class BayarDokterPage extends StatelessWidget {
                           radius: 30,
                           backgroundImage: NetworkImage(
                             dokter.foto.isNotEmpty
-                                ? 'http://172.20.10.5:8000/storage/${dokter.foto}'
+                                ? 'http://192.168.18.9:8000/storage/${dokter.foto}'
                                 : 'https://via.placeholder.com/300x400',
                           ),
                         ),

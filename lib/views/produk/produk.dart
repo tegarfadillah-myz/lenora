@@ -15,7 +15,7 @@ class ProductPage extends StatefulWidget {
 class ProductCard extends StatelessWidget {
   final Produk produk;
   final VoidCallback onTap;
-  final String baseUrl = 'http://172.20.10.5:8000';
+  final String baseUrl = 'http://192.168.18.9:8000';
   const ProductCard({super.key, required this.produk, required this.onTap});
 
   @override
@@ -45,7 +45,7 @@ class ProductCard extends StatelessWidget {
                 width: double.infinity,
                 child: Image.network(
                   produk.gambarProduk !=null && produk.gambarProduk!.isNotEmpty
-                      ? 'http://172.20.10.5:8000/storage/${produk.gambarProduk}'
+                      ? 'http://192.168.18.9:8000/storage/${produk.gambarProduk}'
                       : 'https://via.placeholder.com/300x400',
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
@@ -102,7 +102,7 @@ class _ProductPageState extends State<ProductPage> {
 
   Future<void> fetchProducts() async {
     try {
-      final response = await http.get(Uri.parse('http://172.20.10.5:8000/api/produk'));
+      final response = await http.get(Uri.parse('http://192.168.18.9:8000/api/produk'));
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = jsonDecode(response.body);

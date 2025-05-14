@@ -15,7 +15,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   int quantity = 1;
   int selectedSizeIndex = 0;
   bool isFavorite = false;
-  final String baseUrl = 'http://172.20.10.5:8000';
+  final String baseUrl = 'http://192.168.18.9:8000';
   final List<String> availableSizes = ['30ml', '50ml', '100ml'];
 
   void incrementQuantity() {
@@ -94,7 +94,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       child: Center(
         child: Image.network(
           produk.gambarProduk != null && produk.gambarProduk!.isNotEmpty
-              ? 'http://172.20.10.5:8000/storage/${produk.gambarProduk}'
+              ? 'http://192.168.18.9:8000/storage/${produk.gambarProduk}'
               : 'https://via.placeholder.com/300x400',
           height: 200,
           errorBuilder: (context, error, stackTrace) {

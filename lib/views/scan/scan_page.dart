@@ -97,31 +97,30 @@ class _ScanPageState extends State<ScanPage> {
     int hash = _imageFile!.path.hashCode;
     final conditions = ['Berjerawat', 'Normal'];
     final skinTypes = ['Berminyak', 'Kering', 'Kombinasi'];
-    final acneTypes = ['Jerawat Batu', 'Jerawat Kecil-kecil', 'Tidak Ada Jerawat'];
+    final acneTypes = [
+      'Jerawat Batu',
+      'Jerawat Kecil-kecil',
+      'Tidak Ada Jerawat',
+    ];
 
     final skinCondition = conditions[hash.abs() % conditions.length];
     final skinType = skinTypes[hash.abs() % skinTypes.length];
-    final acneType = (skinCondition == 'Berjerawat')
-        ? acneTypes[(hash.abs() ~/ conditions.length) % 2]
-        : acneTypes[2];
+    final acneType =
+        (skinCondition == 'Berjerawat')
+            ? acneTypes[(hash.abs() ~/ conditions.length) % 2]
+            : acneTypes[2];
 
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ResultPage(
-          imageFile: _imageFile!,
-          skinCondition: skinCondition,
-          skinType: skinType,
-          acneType: acneType,
-        ),
+        builder:
+            (context) => ResultPage(
+              imageFile: _imageFile!,
+              skinCondition: skinCondition,
+              skinType: skinType,
+              acneType: acneType,
+            ),
       ),
-    );
-  }
-
-  Widget _buildFacialPoints() {
-    return CustomPaint(
-      painter: FacialPointsPainter(),
-      child: Container(),
     );
   }
 
@@ -130,30 +129,27 @@ class _ScanPageState extends State<ScanPage> {
     if (_controller == null || !_controller!.value.isInitialized) {
       return const Scaffold(
         backgroundColor: Colors.black,
-        body: Center(
-          child: CircularProgressIndicator(color: Colors.white),
-        ),
+        body: Center(child: CircularProgressIndicator(color: Colors.white)),
       );
     }
 
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: const Text(
-          'AI Skin Health Analysis',
-          style: TextStyle(color: Colors.white),
-        ),
+        backgroundColor: Colors.white,
+        elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.close, color: Colors.white),
+          icon: const Icon(Icons.arrow_back_ios, color: Color(0xFF0F2D52)),
           onPressed: () => Navigator.pop(context),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add, color: Colors.white),
-            onPressed: () {},
+        centerTitle: true,
+        title: const Text(
+          'AI SKIN FACE',
+          style: TextStyle(
+            color: Color(0xFF0F2D52),
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
           ),
-        ],
+        ),
       ),
       body: Stack(
         children: [
@@ -164,41 +160,31 @@ class _ScanPageState extends State<ScanPage> {
               aspectRatio: 1 / _controller!.value.aspectRatio,
               child: Transform.scale(
                 scale: 1.5,
-                child: Center(
-                  child: CameraPreview(_controller!),
-                ),
+                child: Center(child: CameraPreview(_controller!)),
               ),
             ),
           ),
 
-          // Facial Points Overlay
+          // Corner Brackets Overlay
           if (!_isAnalyzing)
-            CustomPaint(
-              painter: FacialPointsPainter(),
-              child: Container(),
-            ),
+            CustomPaint(painter: CornerBracketsPainter(), child: Container()),
 
           // Loading Indicator
           if (_isAnalyzing)
-            const Center(
-              child: CircularProgressIndicator(color: Colors.white),
-            ),
-                
+            const Center(child: CircularProgressIndicator(color: Colors.white)),
+
           // Bottom Controls
           Positioned(
             bottom: 0,
             left: 0,
             right: 0,
             child: Container(
-              padding: EdgeInsets.only(bottom: 50, left: 20, right: 20),
+              padding: const EdgeInsets.only(bottom: 50, left: 20, right: 20),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.bottomCenter,
                   end: Alignment.topCenter,
-                  colors: [
-                    Colors.black.withOpacity(0.8),
-                    Colors.transparent,
-                  ],
+                  colors: [Colors.black.withOpacity(0.8), Colors.transparent],
                 ),
               ),
               child: Stack(
@@ -220,25 +206,32 @@ class _ScanPageState extends State<ScanPage> {
                       ),
                       child: IconButton(
                         onPressed: _takePicture,
-                        icon: const Icon(Icons.camera, color: Colors.black, size: 38),
+                        icon: const Icon(
+                          Icons.camera_alt,
+                          color: Colors.black,
+                          size: 38,
+                        ),
                         padding: EdgeInsets.zero,
                       ),
                     ),
                   ),
                   // Upload Button (Right Side)
                   Positioned(
-                    right: 50,
+                    right: 0,
                     child: Container(
                       width: 65,
                       height: 65,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white.withOpacity(0.3), width: 2),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.3),
+                          width: 2,
+                        ),
                         color: Colors.white.withOpacity(0.15),
                       ),
                       child: IconButton(
                         icon: const Icon(
-                          Icons.photo_library_rounded,
+                          Icons.image,
                           color: Colors.white,
                           size: 32,
                         ),
@@ -250,79 +243,24 @@ class _ScanPageState extends State<ScanPage> {
               ),
             ),
           ),
-        ],
-      ),
-    );
-  }
 
-  Widget _buildTab(String text, bool isActive) {
-    return Column(
-      children: [
-        Text(
-          text,
-          style: TextStyle(
-            color: isActive ? Colors.white : Colors.grey,
-            fontSize: 16,
-          ),
-        ),
-        const SizedBox(height: 4),
-        if (isActive)
-          Container(
-            height: 2,
-            width: 40,
-            color: Colors.white,
-          ),
-      ],
-    );
-  }
-
-  Widget _buildProductCard(String title, String price, String originalPrice) {
-    return Container(
-      width: 160,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            height: 80,
-            decoration: BoxDecoration(
-              color: Colors.purple.withOpacity(0.3),
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            title,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Row(
-            children: [
-              Text(
-                price,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
-                ),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                originalPrice,
+          // Scan Text Overlay
+          Positioned(
+            top: MediaQuery.of(context).size.height * 0.6,
+            left: 0,
+            right: 0,
+            child: const Center(
+              child: Text(
+                'Scan wajah\ntepat di tengah kamera',
+                textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Colors.grey[400],
-                  fontSize: 12,
-                  decoration: TextDecoration.lineThrough,
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  height: 1.5,
                 ),
               ),
-            ],
+            ),
           ),
         ],
       ),
@@ -330,35 +268,67 @@ class _ScanPageState extends State<ScanPage> {
   }
 }
 
-class FacialPointsPainter extends CustomPainter {
+class CornerBracketsPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white
-      ..strokeWidth = 2
-      ..style = PaintingStyle.stroke;
+    final paint =
+        Paint()
+          ..color = Colors.grey
+          ..strokeWidth = 4
+          ..style = PaintingStyle.stroke;
 
-    // Draw facial recognition points
-    final points = [
-      Offset(size.width * 0.3, size.height * 0.3),
-      Offset(size.width * 0.7, size.height * 0.3),
-      Offset(size.width * 0.5, size.height * 0.5),
-      Offset(size.width * 0.3, size.height * 0.7),
-      Offset(size.width * 0.7, size.height * 0.7),
-    ];
+    final centerSquareSize = size.width * 0.7;
+    final startX = (size.width - centerSquareSize) / 2;
+    final startY =
+        (size.height - centerSquareSize) /
+        2.5; // Moved up by adjusting the divisor
+    final lineLength = centerSquareSize * 0.2;
 
-    for (var point in points) {
-      canvas.drawCircle(point, 3, paint);
-    }
+    // Top line
+    canvas.drawLine(
+      Offset(startX, startY),
+      Offset(startX + lineLength, startY),
+      paint,
+    );
+    canvas.drawLine(
+      Offset(startX + centerSquareSize - lineLength, startY),
+      Offset(startX + centerSquareSize, startY),
+      paint,
+    );
 
-    // Draw connecting lines
-    canvas.drawPath(
-      Path()
-        ..moveTo(points[0].dx, points[0].dy)
-        ..lineTo(points[1].dx, points[1].dy)
-        ..lineTo(points[4].dx, points[4].dy)
-        ..lineTo(points[3].dx, points[3].dy)
-        ..lineTo(points[0].dx, points[0].dy),
+    // Bottom line
+    canvas.drawLine(
+      Offset(startX, startY + centerSquareSize),
+      Offset(startX + lineLength, startY + centerSquareSize),
+      paint,
+    );
+    canvas.drawLine(
+      Offset(startX + centerSquareSize - lineLength, startY + centerSquareSize),
+      Offset(startX + centerSquareSize, startY + centerSquareSize),
+      paint,
+    );
+
+    // Left line
+    canvas.drawLine(
+      Offset(startX, startY),
+      Offset(startX, startY + lineLength),
+      paint,
+    );
+    canvas.drawLine(
+      Offset(startX, startY + centerSquareSize - lineLength),
+      Offset(startX, startY + centerSquareSize),
+      paint,
+    );
+
+    // Right line
+    canvas.drawLine(
+      Offset(startX + centerSquareSize, startY),
+      Offset(startX + centerSquareSize, startY + lineLength),
+      paint,
+    );
+    canvas.drawLine(
+      Offset(startX + centerSquareSize, startY + centerSquareSize - lineLength),
+      Offset(startX + centerSquareSize, startY + centerSquareSize),
       paint,
     );
   }
