@@ -3,11 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:lenora/models/dokter.dart';
 import 'package:lenora/models/article.dart';
+import 'package:lenora/models/produk.dart';
 import 'package:lenora/views/dokter/DokterDetail.dart';
 import 'package:lenora/views/article_detail_Page.dart'; // Ensure this file contains the ArticleDetailPage class
+import 'package:lenora/views/produk/detail_Produk.dart';
+import 'package:lenora/views/produk/produk.dart' as produk_page;
 // import 'package:lenora/views/article_page.dart';
 import 'package:lenora/widgets/bottomnavbar.dart';
 import 'package:lenora/views/article_page.dart' as article_page;
+// Ensure this file contains the ProductPage class
 
 class HomePage extends StatefulWidget {
   @override
@@ -17,9 +21,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   Future<List<Dokter>> fetchDokter() async {
     final response = await http.get(
-
-      Uri.parse('http://192.168.18.14:8000/api/dokter'),
-
+      Uri.parse('http://172.20.10.5:8000/api/dokter'),
     );
     if (response.statusCode == 200) {
       final List<dynamic> dokterJson = json.decode(response.body)['data'];
@@ -31,13 +33,25 @@ class _HomePageState extends State<HomePage> {
 
   Future<List<Article>> fetchArtikel() async {
     final response = await http.get(
-      Uri.parse('http://127.0.0.1:8000/api/artikel'),
+      Uri.parse('http://172.20.10.5:8000/api/artikel'),
     );
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body)['data'];
       return data.map((json) => Article.fromJson(json)).toList();
     } else {
       throw Exception('Gagal memuat data artikel');
+    }
+  }
+
+  Future<List<Produk>> fetchProduk() async {
+    final response = await http.get(
+      Uri.parse('http://172.20.10.5:8000/api/produk'),
+    );
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body)['data'];
+      return data.map((json) => Produk.fromJson(json)).toList();
+    } else {
+      throw Exception('Gagal memuat data produk');
     }
   }
 
@@ -173,7 +187,7 @@ class _HomePageState extends State<HomePage> {
                         child: Text(
                           'Daftar Dokter',
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -238,7 +252,7 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                             child: Image.network(
                                               dokter.foto.isNotEmpty
-                                                  ? 'http://127.0.0.1:8000/storage/${dokter.foto}'
+                                                  ? 'http://172.20.10.5:8000/storage/${dokter.foto}'
                                                   : 'https://via.placeholder.com/300x400',
                                               height: 120,
                                               width: double.infinity,
@@ -332,7 +346,7 @@ class _HomePageState extends State<HomePage> {
                             Text(
                               'Artikel Kesehatan',
                               style: TextStyle(
-                                fontSize: 16,
+                                fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -341,15 +355,22 @@ class _HomePageState extends State<HomePage> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => article_page.ArticlePage( ),
+                                    builder:
+                                        (context) => article_page.ArticlePage(),
                                   ),
                                 );
                               },
                               child: Text(
                                 'Lihat Semua',
                                 style: TextStyle(
-                                  color: const Color(0xFF0F2D52),
-                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12,
+                                  color: const Color.fromARGB(
+                                    255,
+                                    107,
+                                    107,
+                                    107,
+                                  ),
+                                  fontWeight: FontWeight.normal,
                                 ),
                               ),
                             ),
@@ -369,7 +390,6 @@ class _HomePageState extends State<HomePage> {
                               child: Text('Gagal memuat data artikel'),
                             );
                           } else {
-                            
                             final artikelList = snapshot.data!;
                             // Hanya tampilkan 5 artikel pertama
                             final displayedArticles =
@@ -388,7 +408,6 @@ class _HomePageState extends State<HomePage> {
                                 separatorBuilder:
                                     (_, __) => SizedBox(width: 12),
                                 itemBuilder: (context, index) {
-                                  
                                   final artikel = displayedArticles[index];
                                   return GestureDetector(
                                     onTap: () {
@@ -426,7 +445,7 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                             child: Image.network(
                                               artikel.thumbnail.isNotEmpty
-                                                  ? 'http://192.168.18.14:8000/storage/${artikel.thumbnail}'
+                                                  ? 'http://172.20.10.5:8000/storage/${artikel.thumbnail}'
                                                   : 'https://via.placeholder.com/300x400',
                                               height: 100,
                                               width: double.infinity,
@@ -486,6 +505,198 @@ class _HomePageState extends State<HomePage> {
                           }
                         },
                       ),
+                      const SizedBox(height: 24),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Produk Skincare',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) => produk_page.ProductPage(),
+                                  ),
+                                );
+                              },
+                              child: Text(
+                                'Lihat Semua',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: const Color.fromARGB(255, 107, 107, 107),
+                                  fontWeight: FontWeight.normal,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      // List Artikel (Horizontal)
+                      FutureBuilder<List<Produk>>(
+                        future: fetchProduk(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Center(child: CircularProgressIndicator());
+                          } else if (snapshot.hasError) {
+                            return Center(
+                              child: Text('Gagal memuat data artikel'),
+                            );
+                          } else {
+                            final produkList = snapshot.data!;
+                            // Hanya tampilkan 5 artikel pertama
+                            final displayedProduks =
+                                produkList.length > 5
+                                    ? produkList.sublist(0, 5)
+                                    : produkList;
+
+                            return SizedBox(
+                              height: 250,
+                              child: ListView.separated(
+                                scrollDirection: Axis.horizontal,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                ),
+                                itemCount: displayedProduks.length,
+                                separatorBuilder:
+                                    (_, __) => SizedBox(width: 12),
+                                itemBuilder: (context, index) {
+                                  final produk = displayedProduks[index];
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => ProductDetailPage(
+                                            produk: produk,
+                                          ), 
+                                        ),
+                                      );
+                                    },
+                                    child: Container(
+                                      width: 160,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(12),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withOpacity(
+                                              0.1,
+                                            ),
+                                            blurRadius: 4,
+                                          ),
+                                        ],
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.vertical(
+                                              top: Radius.circular(12),
+                                            ),
+                                            child: Image.network(
+                                              produk.gambarProduk != null &&
+                                                      produk
+                                                          .gambarProduk!
+                                                          .isNotEmpty
+                                                  ? 'http://172.20.10.5:8000/storage/${produk.gambarProduk}'
+                                                  : 'https://via.placeholder.com/300x400',
+                                              height: 120,
+                                              width: double.infinity,
+                                              fit: BoxFit.cover,
+                                              errorBuilder: (
+                                                context,
+                                                error,
+                                                stackTrace,
+                                              ) {
+                                                return Container(
+                                                  height: 120,
+                                                  color: Colors.grey.shade200,
+                                                  child: Icon(
+                                                    Icons.image_not_supported,
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  '${produk.namaProduk.substring(0, produk.namaProduk.length > 15 ? 15 : produk.namaProduk.length)}${produk.namaProduk.length > 15 ? '...' : ''}',
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 14,
+                                                  ),
+                                                  maxLines: 2,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                                // SizedBox(height: 4),
+                                                Text(
+                                                  "Rp ${produk.harga.toString()}",
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: const Color.fromARGB(
+                                                      255,
+                                                      0,
+                                                      0,
+                                                      0,
+                                                    ),
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                                Text(
+                                                  'Stok: ${produk.stok.toString()}',
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: Colors.grey,
+                                                  ),
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                                Text(
+                                                  'Toko: ${produk.namaToko}',
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: Colors.grey,
+                                                  ),
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                      
 
                       const SizedBox(
                         height: 70,

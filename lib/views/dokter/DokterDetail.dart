@@ -5,6 +5,7 @@ import '../../models/dokter.dart';
 import 'package:lenora/views/dokter/pembayaran.dart';
 
 class DoctorDetailPage extends StatefulWidget {
+
   final Dokter dokter;
 
   const DoctorDetailPage({Key? key, required this.dokter}) : super(key: key);
@@ -108,7 +109,7 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
               child: Image.network(
                 dokter.foto.isNotEmpty
 
-                    ? 'http://192.168.18.14:8000/storage/${dokter.foto}'
+                    ? 'http://172.20.10.5:8000/storage/${dokter.foto}'
                     : 'https://via.placeholder.com/300x400',
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {

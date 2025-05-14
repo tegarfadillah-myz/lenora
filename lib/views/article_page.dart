@@ -29,7 +29,7 @@ class _ArticlePageState extends State<ArticlePage> {
     try {
       final response = await http.get(
 
-        Uri.parse('http://192.168.18.14:8000/api/artikel'),
+        Uri.parse('http://172.20.10.5:8000/api/artikel'),
 
       );
 
@@ -344,7 +344,7 @@ class Article {
     final String thumbnail = json['thumbnail'] ?? '';
     final String imageUrl =
         thumbnail.isNotEmpty
-            ? 'http://127.0.0.1:8000/storage/$thumbnail'
+            ? 'http://172.20.10.5:8000/storage/$thumbnail'
             : 'https://via.placeholder.com/300x200';
 
     final categoryId = json['category']?['id'] ?? 0;
