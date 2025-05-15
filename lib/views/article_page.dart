@@ -27,7 +27,7 @@ class _ArticlePageState extends State<ArticlePage> {
   Future<void> fetchArticles() async {
     try {
       final response = await http.get(
-        Uri.parse('http://192.168.18.9:8000/api/artikel'),
+        Uri.parse('http://172.20.10.5:8000/api/artikel'),
       );
 
       if (response.statusCode == 200) {
@@ -329,7 +329,7 @@ class Article {
     final String thumbnail = json['thumbnail'] ?? '';
     final String imageUrl =
         thumbnail.isNotEmpty
-            ? 'http://192.168.18.9:8000/storage/$thumbnail'
+            ? 'http://172.20.10.5:8000/storage/$thumbnail'
             : 'https://via.placeholder.com/300x200';
 
     final categoryId = json['category']?['id'] ?? 0;
@@ -356,8 +356,8 @@ class ArticleCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 230, // Fixed height for the card
-        margin: const EdgeInsets.only(bottom: 16),
+        height: 250, // Fixed height for the card
+        margin: const EdgeInsets.only(bottom: 25),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
@@ -423,7 +423,7 @@ class ArticleCard extends StatelessWidget {
             ),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -440,18 +440,18 @@ class ArticleCard extends StatelessWidget {
                     Text(
                       article.title,
                       style: const TextStyle(
-                        fontSize: 14,
+                        fontSize: 16,
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const Spacer(),
+                    const SizedBox(height: 4),
                     Text(
                       article.date,
                       style: const TextStyle(
-                        fontSize: 12,
+                        fontSize: 10,
                         color: Colors.black45,
                       ),
                     ),

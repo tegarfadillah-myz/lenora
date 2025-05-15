@@ -15,7 +15,7 @@ class ProductPage extends StatefulWidget {
 class ProductCard extends StatelessWidget {
   final Produk produk;
   final VoidCallback onTap;
-  final String baseUrl = 'http://192.168.18.9:8000';
+  final String baseUrl = 'http://172.20.10.5:8000';
   const ProductCard({super.key, required this.produk, required this.onTap});
 
   @override
@@ -39,19 +39,25 @@ class ProductCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(12),
+              ),
               child: Container(
                 height: 140,
                 width: double.infinity,
                 child: Image.network(
-                  produk.gambarProduk !=null && produk.gambarProduk!.isNotEmpty
-                      ? 'http://192.168.18.9:8000/storage/${produk.gambarProduk}'
+                  produk.gambarProduk != null && produk.gambarProduk!.isNotEmpty
+                      ? 'http://172.20.10.5:8000/storage/${produk.gambarProduk}'
                       : 'https://via.placeholder.com/300x400',
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
                     return Container(
                       color: Colors.grey[300],
-                      child: const Icon(Icons.broken_image, size: 40, color: Colors.grey),
+                      child: const Icon(
+                        Icons.broken_image,
+                        size: 40,
+                        color: Colors.grey,
+                      ),
                     );
                   },
                 ),
@@ -64,7 +70,10 @@ class ProductCard extends StatelessWidget {
                 children: [
                   Text(
                     produk.namaProduk,
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -76,6 +85,10 @@ class ProductCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     produk.kategori,
+                    style: const TextStyle(fontSize: 12, color: Colors.black54),
+                  ),
+                  Text(
+                    produk.namaToko,
                     style: const TextStyle(fontSize: 12, color: Colors.black54),
                   ),
                 ],
@@ -102,7 +115,9 @@ class _ProductPageState extends State<ProductPage> {
 
   Future<void> fetchProducts() async {
     try {
-      final response = await http.get(Uri.parse('http://192.168.18.9:8000/api/produk'));
+      final response = await http.get(
+        Uri.parse('http://172.20.10.5:8000/api/produk'),
+      );
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
@@ -128,7 +143,9 @@ class _ProductPageState extends State<ProductPage> {
   void _navigateToDetail(Produk produk) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => ProductDetailPage(produk: produk)),
+      MaterialPageRoute(
+        builder: (context) => ProductDetailPage(produk: produk),
+      ),
     );
   }
 
@@ -146,7 +163,7 @@ class _ProductPageState extends State<ProductPage> {
   @override
   Widget build(BuildContext context) {
     final double statusBarHeight = MediaQuery.of(context).padding.top;
-    final double appBarHeight = statusBarHeight + 48;
+    final double appBarHeight = statusBarHeight + 65;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -167,7 +184,10 @@ class _ProductPageState extends State<ProductPage> {
                     const SizedBox(height: 20),
                     const Text(
                       'Produk Skincare',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: 12),
                     SizedBox(
@@ -180,10 +200,16 @@ class _ProductPageState extends State<ProductPage> {
                             selected: selectedCategory == null,
                             onSelected: (_) => _filterByCategory(null),
                             backgroundColor: Colors.grey[200],
-                            selectedColor: Colors.blue[100],
+                            selectedColor: const Color(0xFF1C3F60),
                             labelStyle: TextStyle(
-                              color: selectedCategory == null ? Colors.blue : Colors.black87,
-                              fontWeight: selectedCategory == null ? FontWeight.bold : FontWeight.normal,
+                              color:
+                                  selectedCategory == null
+                                      ? const Color.fromARGB(255, 255, 255, 255)
+                                      : Colors.black87,
+                              fontWeight:
+                                  selectedCategory == null
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
                             ),
                           ),
                           const SizedBox(width: 8),
@@ -195,10 +221,21 @@ class _ProductPageState extends State<ProductPage> {
                                 selected: selectedCategory == cat,
                                 onSelected: (_) => _filterByCategory(cat),
                                 backgroundColor: Colors.grey[200],
-                                selectedColor: Colors.blue[100],
+                                selectedColor: const Color(0xFF1C3F60),
                                 labelStyle: TextStyle(
-                                  color: selectedCategory == cat ? Colors.blue : Colors.black87,
-                                  fontWeight: selectedCategory == cat ? FontWeight.bold : FontWeight.normal,
+                                  color:
+                                      selectedCategory == cat
+                                          ? const Color.fromARGB(
+                                            255,
+                                            255,
+                                            255,
+                                            255,
+                                          )
+                                          : Colors.black87,
+                                  fontWeight:
+                                      selectedCategory == cat
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
                                 ),
                               ),
                             ),
@@ -208,37 +245,45 @@ class _ProductPageState extends State<ProductPage> {
                     ),
                     const SizedBox(height: 16),
                     Expanded(
-                      child: products.isEmpty
-                          ? Center(
-                              child: errorMessage != null
-                                  ? Padding(
-                                      padding: const EdgeInsets.all(16.0),
-                                      child: Text(errorMessage!, style: const TextStyle(color: Colors.red)),
-                                    )
-                                  : const CircularProgressIndicator(),
-                            )
-                          : GridView.builder(
-                              itemCount: filteredProducts.length,
-                              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                mainAxisSpacing: 16,
-                                crossAxisSpacing: 16,
-                                childAspectRatio: 0.7,
+                      child:
+                          products.isEmpty
+                              ? Center(
+                                child:
+                                    errorMessage != null
+                                        ? Padding(
+                                          padding: const EdgeInsets.all(16.0),
+                                          child: Text(
+                                            errorMessage!,
+                                            style: const TextStyle(
+                                              color: Colors.red,
+                                            ),
+                                          ),
+                                        )
+                                        : const CircularProgressIndicator(),
+                              )
+                              : GridView.builder(
+                                itemCount: filteredProducts.length,
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 2,
+                                      mainAxisSpacing: 16,
+                                      crossAxisSpacing: 16,
+                                      childAspectRatio: 0.7,
+                                    ),
+                                itemBuilder: (context, index) {
+                                  final produk = filteredProducts[index];
+                                  return ProductCard(
+                                    produk: produk,
+                                    onTap: () => _navigateToDetail(produk),
+                                  );
+                                },
                               ),
-                              itemBuilder: (context, index) {
-                                final produk = filteredProducts[index];
-                                return ProductCard(
-                                  produk: produk,
-                                  onTap: () => _navigateToDetail(produk),
-                                );
-                              },
                             ),
+                          ],
+                        ),
+                      ),
                     ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+                         ),        
           Positioned(
             top: 0,
             left: 0,
@@ -263,29 +308,45 @@ class _ProductPageState extends State<ProductPage> {
                         errorBuilder: (_, __, ___) {
                           return const CircleAvatar(
                             backgroundColor: Color(0xFF0F2D52),
-                            child: Text('S', style: TextStyle(color: Colors.white)),
+                            child: Text(
+                              'S',
+                              style: TextStyle(color: Colors.white),
+                            ),
                           );
                         },
                       ),
                       const SizedBox(width: 8),
                       const Text(
                         'SKINEXPERT',
-                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w900,
+                          fontSize: 16,
+                        ),
                       ),
                     ],
                   ),
                   Row(
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.chat_rounded, color: Colors.white),
+                        icon: const Icon(
+                          Icons.chat_rounded,
+                          color: Colors.white,
+                        ),
                         onPressed: () {},
                       ),
                       IconButton(
-                        icon: const Icon(Icons.shopping_cart, color: Colors.white),
+                        icon: const Icon(
+                          Icons.shopping_cart,
+                          color: Colors.white,
+                        ),
                         onPressed: () {},
                       ),
                       IconButton(
-                        icon: const Icon(Icons.account_circle, color: Colors.white),
+                        icon: const Icon(
+                          Icons.account_circle,
+                          color: Colors.white,
+                        ),
                         onPressed: () {},
                       ),
                     ],

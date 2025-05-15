@@ -26,7 +26,7 @@ class ResultPage extends StatefulWidget {
 class _ResultPageState extends State<ResultPage> {
   Future<List<Produk>> fetchProduk() async {
     final response = await http.get(
-      Uri.parse('http://192.168.18.9:8000/api/produk'),
+      Uri.parse('http://172.20.10.5:8000/api/produk'),
     );
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body)['data'];
@@ -170,7 +170,7 @@ class _ResultPageState extends State<ResultPage> {
                                                   produk
                                                       .gambarProduk!
                                                       .isNotEmpty
-                                              ? 'http://192.168.18.9:8000/storage/${produk.gambarProduk}'
+                                              ? 'http://172.20.10.5:8000/storage/${produk.gambarProduk}'
                                               : 'https://via.placeholder.com/300x400',
                                           height: 120,
                                           width: double.infinity,

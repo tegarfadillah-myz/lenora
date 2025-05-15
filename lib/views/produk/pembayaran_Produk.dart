@@ -113,7 +113,7 @@ class BayarProdukPage extends StatelessWidget {
                             child: Center(
                               child: Image.network(
                                 produk.gambarProduk != null && produk.gambarProduk!.isNotEmpty
-                                    ? 'http://192.168.18.9:8000/storage/${produk.gambarProduk}'
+                                    ? 'http://172.20.10.5:8000/storage/${produk.gambarProduk}'
                                     : 'https://via.placeholder.com/300x400',
                                 height: 200,
                                 errorBuilder: (context, error, stackTrace) {

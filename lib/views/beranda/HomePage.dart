@@ -21,7 +21,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   Future<List<Dokter>> fetchDokter() async {
     final response = await http.get(
-      Uri.parse('http://192.168.18.9:8000/api/dokter'),
+      Uri.parse('http://172.20.10.5:8000/api/dokter'),
     );
     if (response.statusCode == 200) {
       final List<dynamic> dokterJson = json.decode(response.body)['data'];
@@ -33,7 +33,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<List<Article>> fetchArtikel() async {
     final response = await http.get(
-      Uri.parse('http://192.168.18.9:8000/api/artikel'),
+      Uri.parse('http://172.20.10.5:8000/api/artikel'),
     );
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body)['data'];
@@ -45,7 +45,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<List<Produk>> fetchProduk() async {
     final response = await http.get(
-      Uri.parse('http://192.168.18.9:8000/api/produk'),
+      Uri.parse('http://172.20.10.5:8000/api/produk'),
     );
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body)['data'];
@@ -252,7 +252,7 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                             child: Image.network(
                                               dokter.foto.isNotEmpty
-                                                  ? 'http://192.168.18.9:8000/storage/${dokter.foto}'
+                                                  ? 'http://172.20.10.5:8000/storage/${dokter.foto}'
                                                   : 'https://via.placeholder.com/300x400',
                                               height: 120,
                                               width: double.infinity,
@@ -445,7 +445,7 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                             child: Image.network(
                                               artikel.thumbnail.isNotEmpty
-                                                  ? 'http://192.168.18.9:8000/storage/${artikel.thumbnail}'
+                                                  ? 'http://172.20.10.5:8000/storage/${artikel.thumbnail}'
                                                   : 'https://via.placeholder.com/300x400',
                                               height: 100,
                                               width: double.infinity,
@@ -610,7 +610,7 @@ class _HomePageState extends State<HomePage> {
                                                       produk
                                                           .gambarProduk!
                                                           .isNotEmpty
-                                                  ? 'http://192.168.18.9:8000/storage/${produk.gambarProduk}'
+                                                  ? 'http://172.20.10.5:8000/storage/${produk.gambarProduk}'
                                                   : 'https://via.placeholder.com/300x400',
                                               height: 120,
                                               width: double.infinity,

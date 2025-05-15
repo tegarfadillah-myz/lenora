@@ -44,7 +44,7 @@ class DoctorCard extends StatelessWidget {
                 width: double.infinity,
                 child: Image.network(
                   dokter.foto.isNotEmpty
-                      ? 'http://192.168.18.9:8000/storage/${dokter.foto}'
+                      ? 'http://172.20.10.5:8000/storage/${dokter.foto}'
                       : 'https://via.placeholder.com/300x400',
                   fit: BoxFit.cover,
                   loadingBuilder: (context, child, loadingProgress) {
@@ -160,7 +160,7 @@ class _DoctorPageState extends State<DoctorPage> {
     try {
       final response = await http.get(
 
-        Uri.parse('http://192.168.18.9:8000/api/dokter'),
+        Uri.parse('http://172.20.10.5:8000/api/dokter'),
 
       );
 
@@ -216,7 +216,7 @@ class _DoctorPageState extends State<DoctorPage> {
     // Calculate the height of the custom app bar
     final double statusBarHeight = MediaQuery.of(context).padding.top;
     final double appBarHeight =
-        statusBarHeight + 48; // Adjusted based on your header height
+        statusBarHeight + 65; 
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -257,12 +257,12 @@ class _DoctorPageState extends State<DoctorPage> {
                             selected: selectedSpecialty == null,
                             onSelected: (_) => _filterBySpecialty(null),
                             backgroundColor: Colors.grey[200],
-                            selectedColor: Colors.blue[100],
+                            selectedColor: const Color(0xFF1C3F60),
                             labelStyle: TextStyle(
                               color:
                                   selectedSpecialty == null
-                                      ? Colors.blue
-                                      : Colors.black87,
+                                      ? const Color.fromARGB(255, 255, 255, 255)
+                                      : const Color(0xFF1C3F60),
                               fontWeight:
                                   selectedSpecialty == null
                                       ? FontWeight.bold
@@ -280,12 +280,12 @@ class _DoctorPageState extends State<DoctorPage> {
                                     onSelected:
                                         (_) => _filterBySpecialty(specialty),
                                     backgroundColor: Colors.grey[200],
-                                    selectedColor: Colors.blue[100],
+                                    selectedColor: const Color(0xFF1C3F60),
                                     labelStyle: TextStyle(
                                       color:
                                           selectedSpecialty == specialty
-                                              ? Colors.blue
-                                              : Colors.black87,
+                                              ? const Color.fromARGB(255, 255, 255, 255)
+                                              : const Color(0xFF1C3F60),
                                       fontWeight:
                                           selectedSpecialty == specialty
                                               ? FontWeight.bold
