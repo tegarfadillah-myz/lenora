@@ -53,10 +53,7 @@ class BayarProdukPage extends StatelessWidget {
                     ),
                     const Text(
                       'Kpg. Sutoyo No. 620, Bilzen, Tanjungbalai.',
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 14,
-                      ),
+                      style: TextStyle(color: Colors.grey, fontSize: 14),
                     ),
                     const SizedBox(height: 12),
                     Row(
@@ -107,17 +104,21 @@ class BayarProdukPage extends StatelessWidget {
                             width: 60,
                             height: 60,
                             decoration: BoxDecoration(
-                              
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Center(
                               child: Image.network(
-                                produk.gambarProduk != null && produk.gambarProduk!.isNotEmpty
+                                produk.gambarProduk != null &&
+                                        produk.gambarProduk!.isNotEmpty
                                     ? 'http://192.168.18.14:8000/storage/${produk.gambarProduk}'
                                     : 'https://via.placeholder.com/300x400',
                                 height: 200,
                                 errorBuilder: (context, error, stackTrace) {
-                                  return const Icon(Icons.image, size: 60, color: Colors.grey);
+                                  return const Icon(
+                                    Icons.image,
+                                    size: 60,
+                                    color: Colors.grey,
+                                  );
                                 },
                               ),
                             ),
@@ -145,7 +146,10 @@ class BayarProdukPage extends StatelessWidget {
                             ),
                           ),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
                               border: Border.all(color: Colors.grey.shade300),
                               borderRadius: BorderRadius.circular(16),
@@ -200,13 +204,10 @@ class BayarProdukPage extends StatelessWidget {
                       children: [
                         const Text(
                           'Harga 1x:',
-                          style: TextStyle(
-                            color: Colors.black87,
-                            fontSize: 16,
-                          ),
+                          style: TextStyle(color: Colors.black87, fontSize: 16),
                         ),
                         Text(
-                          produk.harga,
+                          produk.harga.toString(),
                           style: const TextStyle(
                             color: Colors.black87,
                             fontSize: 16,
@@ -220,10 +221,7 @@ class BayarProdukPage extends StatelessWidget {
                       children: [
                         const Text(
                           'Total:',
-                          style: TextStyle(
-                            color: Colors.black87,
-                            fontSize: 16,
-                          ),
+                          style: TextStyle(color: Colors.black87, fontSize: 16),
                         ),
                         Row(
                           children: [
@@ -237,7 +235,7 @@ class BayarProdukPage extends StatelessWidget {
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              produk.harga,
+                              produk.harga.toString(),
                               style: const TextStyle(
                                 color: Colors.black,
                                 fontSize: 16,
@@ -289,7 +287,10 @@ class BayarProdukPage extends StatelessWidget {
                               ),
                             ),
                             SizedBox(width: 8),
-                            Icon(Icons.keyboard_arrow_down, color: Colors.white),
+                            Icon(
+                              Icons.keyboard_arrow_down,
+                              color: Colors.white,
+                            ),
                           ],
                         ),
                       ],
@@ -310,7 +311,10 @@ class BayarProdukPage extends StatelessWidget {
                         ),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 100 ,vertical: 0),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 100,
+                          vertical: 0,
+                        ),
                         child: const Text(
                           'Bayar',
                           style: TextStyle(
@@ -318,10 +322,9 @@ class BayarProdukPage extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                      )
+                      ),
                     ),
                     const SizedBox(height: 16),
-                    
                   ],
                 ),
               ),

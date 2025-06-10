@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:lenora/models/dokter.dart';
 import 'package:lenora/models/article.dart';
+import 'package:lenora/models/keranjang_response.dart';
 import 'package:lenora/models/produk.dart';
 
 
@@ -120,4 +121,96 @@ class ApiService {
       print('Logout error (diabaikan): $e');
     }
   }
+
+Future<KeranjangResponse> getKeranjang(int userId) async {
+    final url = Uri.parse('$baseUrl/keranjang?user_id=$userId');
+    final response = await http.get(
+      url,
+      headers: {'Accept': 'application/json'},
+    );
+
+    // ================== TAMBAHKAN PRINT DI SINI ==================
+    print('--- RAW JSON RESPONSE KERANJANG ---');
+    print(response.body); // Ini akan mencetak JSON mentah dari server
+    // =============================================================
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      if (data['success'] == true) {
+        return KeranjangResponse.fromJson(data);
+      } else {
+        throw Exception(data['message'] ?? 'Gagal memuat keranjang');
+      }
+    } else {
+      throw Exception(
+        'Gagal terhubung ke server (Status code: ${response.statusCode})',
+      );
+    }
+  }
+
+
+  /// Menambahkan produk ke keranjang (BUTUH TOKEN)
+  Future<void> tambahKeKeranjang(int userId, int produkId) async {
+    final url = Uri.parse('$baseUrl/keranjang');
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      // Body hanya berisi userId dan produkId
+      body: json.encode({'user_id': userId, 'produk_id': produkId}),
+    );
+
+    // Cek jika request tidak berhasil
+    if (response.statusCode != 200) {
+      // Melempar error agar bisa ditangkap oleh blok catch di UI
+      final responseData = json.decode(response.body);
+      throw Exception(responseData['message'] ?? 'Gagal menambahkan produk');
+    }
+  }
+
+
+  /// Mengubah jumlah item di keranjang (BUTUH TOKEN)
+  Future<void> updateJumlahKeranjang(
+    int userId,
+    int keranjangId,
+    String action,
+  ) async {
+    final url = Uri.parse('$baseUrl/keranjang/$keranjangId');
+    final response = await http.put(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: json.encode({'user_id': userId, 'action': action}),
+    );
+    if (response.statusCode != 200) throw Exception('Gagal memperbarui item');
+  }
+
+  Future<void> hapusDariKeranjang(int userId, int keranjangId) async {
+    final url = Uri.parse('$baseUrl/keranjang/$keranjangId');
+    // NOTE: http.delete tidak standar punya body, jadi kita kirim lewat request object
+    final request = http.Request('DELETE', url);
+    request.headers.addAll({
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    });
+    request.body = json.encode({'user_id': userId});
+    final response = await request.send();
+    if (response.statusCode != 200) throw Exception('Gagal menghapus item');
+  }
+
+
+
+
+
+
+
+
+
+
+
+
 }

@@ -75,13 +75,11 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               ),
             ),
           ),
-          _buildAddToCartSection(produk), 
+          _buildAddToCartSection(produk),
         ],
       ),
     );
   }
-
- 
 
   Widget _buildProductImage(Produk produk) {
     return Container(
@@ -106,36 +104,26 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   }
 
   Widget _buildProductInfo(Produk produk) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 16),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          produk.namaProduk,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            produk.namaProduk,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          "Rp. ${produk.harga}",
-          style: const TextStyle(
-            fontSize: 14,
-            color: Colors.black54,
+          const SizedBox(height: 4),
+          Text(
+            "Rp. ${produk.harga}",
+            style: const TextStyle(fontSize: 14, color: Colors.black54),
           ),
-        ),
-        const SizedBox(height: 12),
-        Text(
-          produk.deskripsiProduk,
-          style: const TextStyle(fontSize: 14),
-        ),
-      ],
-    ),
-  );
-}
-
+          const SizedBox(height: 12),
+          Text(produk.deskripsiProduk, style: const TextStyle(fontSize: 14)),
+        ],
+      ),
+    );
+  }
 
   Widget _buildSizeSelector() {
     return Padding(
@@ -155,16 +143,25 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 onTap: () => selectSize(index),
                 child: Container(
                   margin: const EdgeInsets.only(right: 12),
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
                   decoration: BoxDecoration(
-                    color: selectedSizeIndex == index ? const Color(0xFF1C3A5D) : Colors.white,
+                    color:
+                        selectedSizeIndex == index
+                            ? const Color(0xFF1C3A5D)
+                            : Colors.white,
                     border: Border.all(color: const Color(0xFF1C3A5D)),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
                     availableSizes[index],
                     style: TextStyle(
-                      color: selectedSizeIndex == index ? Colors.white : const Color(0xFF1C3A5D),
+                      color:
+                          selectedSizeIndex == index
+                              ? Colors.white
+                              : const Color(0xFF1C3A5D),
                     ),
                   ),
                 ),
@@ -176,13 +173,17 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     );
   }
 
-  Widget _buildAddToCartSection( Produk produk) {
+  Widget _buildAddToCartSection(Produk produk) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: const BoxDecoration(
         color: Colors.white,
         boxShadow: [
-          BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0, -2)),
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 10,
+            offset: Offset(0, -2),
+          ),
         ],
       ),
       child: Row(
@@ -231,7 +232,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               ),
             ),
           ),
-
         ],
       ),
     );

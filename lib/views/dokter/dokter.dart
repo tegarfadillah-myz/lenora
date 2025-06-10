@@ -1,9 +1,12 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:lenora/services/auth_service.dart';
 import 'package:lenora/views/dokter/DokterDetail.dart';
+import 'package:lenora/views/produk/keranjang.dart';
 import 'package:lenora/widgets/bottomnavbar.dart';
 import 'package:lenora/models/dokter.dart';
+import 'package:provider/provider.dart';
 
 class DoctorPage extends StatefulWidget {
   const DoctorPage({super.key});
@@ -404,7 +407,41 @@ class _DoctorPageState extends State<DoctorPage> {
                           color: Colors.white,
                         ),
                         onPressed: () {
-                          // TODO: Arahkan ke halaman keranjang
+                          // 1. Ambil instance AuthService menggunakan Provider
+                          // listen: false karena kita hanya butuh memanggil data, tidak perlu me-rebuild widget ini
+                          final authService = Provider.of<AuthService>(
+                            context,
+                            listen: false,
+                          );
+
+                          // 2. Cek status login dari AuthService
+                          if (authService.isAuthenticated &&
+                              authService.user != null) {
+                            // 3. Ambil userId langsung dari objek user yang ada di AuthService
+                            final int userId = authService.user!.id;
+
+                            print(
+                              'Berhasil mendapatkan userId: $userId. Navigasi ke keranjang...',
+                            );
+
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                // Panggil KeranjangScreen tanpa argumen apapun.
+                                // Halaman ini akan mengambil data login sendiri.
+                                builder: (context) => const KeranjangScreen(),
+                              ),
+                            );
+                          } else {
+                            // 4. Jika user tidak ditemukan di AuthService, tampilkan pesan
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Anda harus login terlebih dahulu.',
+                                ),
+                              ),
+                            );
+                          }
                         },
                       ),
                       IconButton(

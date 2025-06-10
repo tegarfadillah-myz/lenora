@@ -5,12 +5,11 @@ class Produk {
   final String namaProduk;
   final String slug;
   final String deskripsiProduk;
-  final String harga;
+  final int harga;
   final int stok;
   final String? gambarProduk;
   final String namaToko;
   final String kategori;
- 
 
   Produk({
     required this.id,
@@ -22,22 +21,20 @@ class Produk {
     required this.gambarProduk,
     required this.namaToko,
     required this.kategori,
-
   });
   factory Produk.fromJson(Map<String, dynamic> json) {
-  return Produk(
-    id: json['id'],
-    namaProduk: json['nama_produk'] ?? '',
-    slug: json['slug'] ?? '',
-    deskripsiProduk: json['deskripsi_produk'] ?? '',
-    harga: json['harga'] ?? '',
-    stok: json['stok'] ?? 0,
-    gambarProduk: json['gambar_produk'] ?? '',
-    namaToko: json['nama_toko'] ?? '',
-    kategori: json['kategori'] ?? '',
-  );
-}
+    return Produk(
+      id: json['id'],
+      namaProduk: json['nama_produk'] ?? '',
+      slug: json['slug'] ?? '',
+      deskripsiProduk: json['deskripsi_produk'] ?? '',
+      harga: json['harga'] ?? '',
+      stok: json['stok'] ?? 0,
+      gambarProduk: json['gambar_produk'] ?? '',
+      namaToko: json['nama_toko'] ?? '',
+      kategori: json['kategori'] ?? '',
+    );
+  }
 
   toJson() {}
-
 }
