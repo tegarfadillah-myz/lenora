@@ -9,9 +9,8 @@ import 'package:lenora/models/produk.dart';
 
 
 class ApiService {
-  // PASTIKAN BASEURL ANDA BENAR
-  static const String baseUrl =
-      'http://192.168.18.14:8000/api'; // GANTI DENGAN IP ANDA
+  // PASTIKAN BASEURL ANDA .
+  static const String baseUrl ='http://192.168.18.14:8000/api'; // GANTI DENGAN IP ANDA
 
   // --- FUNGSI-FUNGSI LAMA ANDA (Sudah ada) ---
 

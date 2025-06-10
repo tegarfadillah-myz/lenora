@@ -15,7 +15,7 @@ class ProductPage extends StatefulWidget {
 class ProductCard extends StatelessWidget {
   final Produk produk;
   final VoidCallback onTap;
-  final String baseUrl = 'http://172.20.10.5:8000';
+  final String baseUrl = 'http://192.168.18.14:8000';
   const ProductCard({super.key, required this.produk, required this.onTap});
 
   @override

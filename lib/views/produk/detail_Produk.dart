@@ -15,7 +15,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   int quantity = 1;
   int selectedSizeIndex = 0;
   bool isFavorite = false;
-  final String baseUrl = 'http://172.20.10.5:8000';
+  final String baseUrl = 'http://192.168.18.14:8000';
   final List<String> availableSizes = ['30ml', '50ml', '100ml'];
 
   void incrementQuantity() {

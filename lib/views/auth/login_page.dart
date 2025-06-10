@@ -51,10 +51,11 @@ class _LoginPageState extends State<LoginPage> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // Ganti dengan logo Anda
-                const Icon(
-                  Icons.shield_moon,
-                  size: 80,
-                  color: Color(0xFF0F2D52),
+                Image.asset(
+                  'assets/Desain tanpa judul.png', // Ganti dengan path file kamu
+                  width: 80,
+                  height: 80,
+                  // Jika kamu ingin memberi warna (pastikan gambarnya support coloring)
                 ),
                 const SizedBox(height: 16),
                 const Text(
@@ -71,9 +72,14 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(height: 40),
                 TextFormField(
                   controller: _emailController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'Email',
-                    border: OutlineInputBorder(),
+                    border: OutlineInputBorder(
+                      // Tetap gunakan OutlineInputBorder
+                      borderRadius: BorderRadius.circular(
+                        50.0,
+                      ), // Tambahkan baris ini
+                    ),
                   ),
                   keyboardType: TextInputType.emailAddress,
                   validator:
@@ -87,7 +93,11 @@ class _LoginPageState extends State<LoginPage> {
                   controller: _passwordController,
                   decoration: const InputDecoration(
                     labelText: 'Password',
-                    border: OutlineInputBorder(),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(50.0),
+                      ), // Tambahkan baris ini
+                    ),
                   ),
                   obscureText: true,
                   validator:
@@ -105,7 +115,14 @@ class _LoginPageState extends State<LoginPage> {
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         backgroundColor: const Color(0xFF0F2D52),
                       ),
-                      child: const Text('Login'),
+                      child: const Text(
+                        'Login',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                 const SizedBox(height: 16),
                 // Row(
