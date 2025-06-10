@@ -153,7 +153,7 @@ class BayarDokterPage extends StatelessWidget {
                           radius: 30,
                           backgroundImage: NetworkImage(
                             dokter.foto.isNotEmpty
-                                ? 'http://172.20.10.5:8000/storage/${dokter.foto}'
+                                ? 'http://192.168.18.14:8000/storage/${dokter.foto}'
                                 : 'https://via.placeholder.com/300x400',
                           ),
                         ),

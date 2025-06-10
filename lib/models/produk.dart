@@ -38,4 +38,6 @@ class Produk {
   );
 }
 
+  toJson() {}
+
 }

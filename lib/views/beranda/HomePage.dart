@@ -1,17 +1,27 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+
+// Import Model Anda
 import 'package:lenora/models/dokter.dart';
 import 'package:lenora/models/article.dart';
 import 'package:lenora/models/produk.dart';
+
+// Import Provider Anda
+import 'package:lenora/services/auth_service.dart';
+
+// Import View/Page Anda
 import 'package:lenora/views/dokter/DokterDetail.dart';
-import 'package:lenora/views/article_detail_Page.dart'; // Ensure this file contains the ArticleDetailPage class
+import 'package:lenora/views/article_detail_Page.dart';
 import 'package:lenora/views/produk/detail_Produk.dart';
+import 'package:lenora/views/auth/login_page.dart';
 import 'package:lenora/views/produk/produk.dart' as produk_page;
-// import 'package:lenora/views/article_page.dart';
-import 'package:lenora/widgets/bottomnavbar.dart';
 import 'package:lenora/views/article_page.dart' as article_page;
-// Ensure this file contains the ProductPage class
+import 'package:lenora/views/dokter/dokter.dart' as dokter_page;
+
+// Import Widget Anda
+import 'package:lenora/widgets/bottomnavbar.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -19,9 +29,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  // Fungsi untuk mengambil data Dokter dari API
   Future<List<Dokter>> fetchDokter() async {
     final response = await http.get(
-      Uri.parse('http://172.20.10.5:8000/api/dokter'),
+      Uri.parse('http://192.168.18.14:8000/api/dokter'),
     );
     if (response.statusCode == 200) {
       final List<dynamic> dokterJson = json.decode(response.body)['data'];
@@ -31,9 +42,10 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  // Fungsi untuk mengambil data Artikel dari API
   Future<List<Article>> fetchArtikel() async {
     final response = await http.get(
-      Uri.parse('http://172.20.10.5:8000/api/artikel'),
+      Uri.parse('http://192.168.18.14:8000/api/artikel'),
     );
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body)['data'];
@@ -43,9 +55,10 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  // Fungsi untuk mengambil data Produk dari API
   Future<List<Produk>> fetchProduk() async {
     final response = await http.get(
-      Uri.parse('http://172.20.10.5:8000/api/produk'),
+      Uri.parse('http://192.168.18.14:8000/api/produk'),
     );
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body)['data'];
@@ -55,6 +68,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  // Widget untuk membuat chip kategori
   Widget _buildCategoryChip(String label, bool isSelected) {
     return Container(
       margin: const EdgeInsets.only(right: 8),
@@ -68,13 +82,16 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    // Anda bisa mendapatkan nama pengguna dari provider jika tersedia
+    // final userName = Provider.of<AuthProvider>(context).user?.name ?? 'Pengguna';
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
         children: [
           CustomScrollView(
             slivers: [
-              // Header & Search
+              // Bagian Header Biru & Pencarian
               SliverToBoxAdapter(
                 child: Container(
                   color: const Color(0xFF0F2D52),
@@ -88,7 +105,7 @@ class _HomePageState extends State<HomePage> {
                         style: TextStyle(color: Colors.white, fontSize: 14),
                       ),
                       const Text(
-                        'Fadly Agus Mulianta',
+                        'Fadly Agus Mulianta', // Ganti dengan `userName` jika sudah ada
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,
@@ -115,7 +132,7 @@ class _HomePageState extends State<HomePage> {
                         height: 150,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
-                          itemCount: 3,
+                          itemCount: 3, // Jumlah banner
                           itemBuilder: (context, index) {
                             return Container(
                               margin: EdgeInsets.only(right: 12),
@@ -147,7 +164,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
 
-              // Konten Putih (rounded)
+              // Bagian Konten Putih dengan sudut melengkung
               SliverToBoxAdapter(
                 child: Container(
                   decoration: BoxDecoration(
@@ -181,15 +198,38 @@ class _HomePageState extends State<HomePage> {
                       ),
                       const SizedBox(height: 16),
 
-                      // Judul Dokter
+                      // Judul Daftar Dokter
                       Padding(
-                        padding: const EdgeInsets.only(left: 16, bottom: 16),
-                        child: Text(
-                          'Daftar Dokter',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Daftar Dokter',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) => dokter_page.DoctorPage(),
+                                  ),
+                                );
+                              },
+                              child: Text(
+                                'Lihat Semua',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey.shade700,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
 
@@ -219,17 +259,16 @@ class _HomePageState extends State<HomePage> {
                                 itemBuilder: (context, index) {
                                   final dokter = dokterList[index];
                                   return GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder:
-                                              (_) => DoctorDetailPage(
-                                                dokter: dokter,
-                                              ),
+                                    onTap:
+                                        () => Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder:
+                                                (_) => DoctorDetailPage(
+                                                  dokter: dokter,
+                                                ),
+                                          ),
                                         ),
-                                      );
-                                    },
                                     child: Container(
                                       width: 160,
                                       decoration: BoxDecoration(
@@ -238,13 +277,15 @@ class _HomePageState extends State<HomePage> {
                                         boxShadow: [
                                           BoxShadow(
                                             color: Colors.black.withOpacity(
-                                              0.2,
+                                              0.1,
                                             ),
                                             blurRadius: 4,
                                           ),
                                         ],
                                       ),
                                       child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           ClipRRect(
                                             borderRadius: BorderRadius.vertical(
@@ -252,28 +293,29 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                             child: Image.network(
                                               dokter.foto.isNotEmpty
-                                                  ? 'http://172.20.10.5:8000/storage/${dokter.foto}'
-                                                  : 'https://via.placeholder.com/300x400',
+                                                  ? 'http://192.168.18.14:8000/storage/${dokter.foto}'
+                                                  : 'https://via.placeholder.com/160x120',
                                               height: 120,
                                               width: double.infinity,
                                               fit: BoxFit.cover,
-                                              errorBuilder: (
-                                                context,
-                                                error,
-                                                stackTrace,
-                                              ) {
-                                                return Container(
-                                                  height: 120,
-                                                  color: Colors.grey.shade200,
-                                                  child: Icon(
-                                                    Icons.image_not_supported,
+                                              errorBuilder:
+                                                  (
+                                                    context,
+                                                    error,
+                                                    stackTrace,
+                                                  ) => Container(
+                                                    height: 120,
+                                                    color: Colors.grey.shade200,
+                                                    child: Icon(
+                                                      Icons.broken_image,
+                                                      color:
+                                                          Colors.grey.shade400,
+                                                    ),
                                                   ),
-                                                );
-                                              },
                                             ),
                                           ),
                                           Padding(
-                                            padding: const EdgeInsets.all(8),
+                                            padding: const EdgeInsets.all(8.0),
                                             child: Column(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
@@ -284,40 +326,34 @@ class _HomePageState extends State<HomePage> {
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: 14,
                                                   ),
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                 ),
                                                 Text(
-                                                  "Spesialis: ${dokter.spesialisasi}",
+                                                  "Sp. ${dokter.spesialisasi}",
                                                   style: TextStyle(
                                                     fontSize: 12,
                                                     color: Colors.grey,
                                                   ),
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                 ),
                                                 SizedBox(height: 4),
                                                 Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
                                                   children: [
-                                                    Row(
-                                                      children: [
-                                                        Icon(
-                                                          Icons.star,
-                                                          color: Colors.amber,
-                                                          size: 14,
-                                                        ),
-                                                        SizedBox(width: 4),
-                                                        Text(
-                                                          '${dokter.rating}',
-                                                          style: TextStyle(
-                                                            fontSize: 12,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
                                                     Icon(
-                                                      Icons.add_circle_outline,
-                                                      size: 18,
-                                                      color: Colors.grey,
+                                                      Icons.star,
+                                                      color: Colors.amber,
+                                                      size: 16,
+                                                    ),
+                                                    SizedBox(width: 4),
+                                                    Text(
+                                                      '${dokter.rating}',
+                                                      style: TextStyle(
+                                                        fontSize: 12,
+                                                      ),
                                                     ),
                                                   ],
                                                 ),
@@ -334,10 +370,9 @@ class _HomePageState extends State<HomePage> {
                           }
                         },
                       ),
-
                       const SizedBox(height: 24),
 
-                      // Judul Artikel dengan tombol Lihat Semua
+                      // Judul Artikel Kesehatan
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Row(
@@ -351,26 +386,20 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                             TextButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder:
-                                        (context) => article_page.ArticlePage(),
+                              onPressed:
+                                  () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) =>
+                                              article_page.ArticlePage(),
+                                    ),
                                   ),
-                                );
-                              },
                               child: Text(
                                 'Lihat Semua',
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: const Color.fromARGB(
-                                    255,
-                                    107,
-                                    107,
-                                    107,
-                                  ),
-                                  fontWeight: FontWeight.normal,
+                                  color: Colors.grey.shade700,
                                 ),
                               ),
                             ),
@@ -391,14 +420,12 @@ class _HomePageState extends State<HomePage> {
                             );
                           } else {
                             final artikelList = snapshot.data!;
-                            // Hanya tampilkan 5 artikel pertama
                             final displayedArticles =
                                 artikelList.length > 5
                                     ? artikelList.sublist(0, 5)
                                     : artikelList;
-
                             return SizedBox(
-                              height: 180,
+                              height: 200,
                               child: ListView.separated(
                                 scrollDirection: Axis.horizontal,
                                 padding: const EdgeInsets.symmetric(
@@ -406,21 +433,20 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 itemCount: displayedArticles.length,
                                 separatorBuilder:
-                                    (_, __) => SizedBox(width: 12),
+                                    (_, __) => SizedBox(width: 20),
                                 itemBuilder: (context, index) {
                                   final artikel = displayedArticles[index];
                                   return GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder:
-                                              (context) => ArticleDetailPage(
-                                                articleId: artikel.id,
-                                              ),
+                                    onTap:
+                                        () => Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder:
+                                                (context) => ArticleDetailPage(
+                                                  articleId: artikel.id,
+                                                ),
+                                          ),
                                         ),
-                                      );
-                                    },
                                     child: Container(
                                       width: 220,
                                       decoration: BoxDecoration(
@@ -445,34 +471,31 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                             child: Image.network(
                                               artikel.thumbnail.isNotEmpty
-                                                  ? 'http://172.20.10.5:8000/storage/${artikel.thumbnail}'
-                                                  : 'https://via.placeholder.com/300x400',
+                                                  ? 'http://192.168.18.14:8000/storage/${artikel.thumbnail}'
+                                                  : 'https://via.placeholder.com/220x100',
                                               height: 100,
                                               width: double.infinity,
                                               fit: BoxFit.cover,
-                                              errorBuilder: (
-                                                context,
-                                                error,
-                                                stackTrace,
-                                              ) {
-                                                return Container(
-                                                  height: 100,
-                                                  color: Colors.grey.shade200,
-                                                  child: Icon(
-                                                    Icons.image_not_supported,
+                                              errorBuilder:
+                                                  (c, e, s) => Container(
+                                                    height: 100,
+                                                    color: Colors.grey.shade200,
+                                                    child: Icon(
+                                                      Icons.broken_image,
+                                                      color:
+                                                          Colors.grey.shade400,
+                                                    ),
                                                   ),
-                                                );
-                                              },
                                             ),
                                           ),
                                           Padding(
-                                            padding: const EdgeInsets.all(8),
+                                            padding: const EdgeInsets.all(8.0),
                                             child: Column(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  '${artikel.name.substring(0, artikel.name.length > 15 ? 15 : artikel.name.length)}${artikel.name.length > 15 ? '...' : ''}',
+                                                  artikel.name,
                                                   style: TextStyle(
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: 14,
@@ -506,6 +529,8 @@ class _HomePageState extends State<HomePage> {
                         },
                       ),
                       const SizedBox(height: 24),
+
+                      // Judul Produk Skincare
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Row(
@@ -519,21 +544,20 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                             TextButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder:
-                                        (context) => produk_page.ProductPage(),
+                              onPressed:
+                                  () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) =>
+                                              produk_page.ProductPage(),
+                                    ),
                                   ),
-                                );
-                              },
                               child: Text(
                                 'Lihat Semua',
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: const Color.fromARGB(255, 107, 107, 107),
-                                  fontWeight: FontWeight.normal,
+                                  color: Colors.grey.shade700,
                                 ),
                               ),
                             ),
@@ -541,7 +565,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
 
-                      // List Artikel (Horizontal)
+                      // List Produk (Horizontal)
                       FutureBuilder<List<Produk>>(
                         future: fetchProduk(),
                         builder: (context, snapshot) {
@@ -554,12 +578,10 @@ class _HomePageState extends State<HomePage> {
                             );
                           } else {
                             final produkList = snapshot.data!;
-                            // Hanya tampilkan 5 artikel pertama
                             final displayedProduks =
                                 produkList.length > 5
                                     ? produkList.sublist(0, 5)
                                     : produkList;
-
                             return SizedBox(
                               height: 250,
                               child: ListView.separated(
@@ -573,16 +595,16 @@ class _HomePageState extends State<HomePage> {
                                 itemBuilder: (context, index) {
                                   final produk = displayedProduks[index];
                                   return GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => ProductDetailPage(
-                                            produk: produk,
-                                          ), 
+                                    onTap:
+                                        () => Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder:
+                                                (context) => ProductDetailPage(
+                                                  produk: produk,
+                                                ),
+                                          ),
                                         ),
-                                      );
-                                    },
                                     child: Container(
                                       width: 160,
                                       decoration: BoxDecoration(
@@ -610,34 +632,31 @@ class _HomePageState extends State<HomePage> {
                                                       produk
                                                           .gambarProduk!
                                                           .isNotEmpty
-                                                  ? 'http://172.20.10.5:8000/storage/${produk.gambarProduk}'
-                                                  : 'https://via.placeholder.com/300x400',
+                                                  ? 'http://192.168.18.14:8000/storage/${produk.gambarProduk}'
+                                                  : 'https://via.placeholder.com/160x120',
                                               height: 120,
                                               width: double.infinity,
                                               fit: BoxFit.cover,
-                                              errorBuilder: (
-                                                context,
-                                                error,
-                                                stackTrace,
-                                              ) {
-                                                return Container(
-                                                  height: 120,
-                                                  color: Colors.grey.shade200,
-                                                  child: Icon(
-                                                    Icons.image_not_supported,
+                                              errorBuilder:
+                                                  (c, e, s) => Container(
+                                                    height: 120,
+                                                    color: Colors.grey.shade200,
+                                                    child: Icon(
+                                                      Icons.broken_image,
+                                                      color:
+                                                          Colors.grey.shade400,
+                                                    ),
                                                   ),
-                                                );
-                                              },
                                             ),
                                           ),
                                           Padding(
-                                            padding: const EdgeInsets.all(8),
+                                            padding: const EdgeInsets.all(8.0),
                                             child: Column(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  '${produk.namaProduk.substring(0, produk.namaProduk.length > 15 ? 15 : produk.namaProduk.length)}${produk.namaProduk.length > 15 ? '...' : ''}',
+                                                  produk.namaProduk,
                                                   style: TextStyle(
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: 14,
@@ -646,22 +665,13 @@ class _HomePageState extends State<HomePage> {
                                                   overflow:
                                                       TextOverflow.ellipsis,
                                                 ),
-                                                // SizedBox(height: 4),
                                                 Text(
                                                   "Rp ${produk.harga.toString()}",
                                                   style: TextStyle(
                                                     fontSize: 14,
-                                                    color: const Color.fromARGB(
-                                                      255,
-                                                      0,
-                                                      0,
-                                                      0,
-                                                    ),
                                                     fontWeight: FontWeight.bold,
+                                                    color: Colors.deepOrange,
                                                   ),
-                                                  maxLines: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
                                                 ),
                                                 Text(
                                                   'Stok: ${produk.stok.toString()}',
@@ -669,9 +679,6 @@ class _HomePageState extends State<HomePage> {
                                                     fontSize: 12,
                                                     color: Colors.grey,
                                                   ),
-                                                  maxLines: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
                                                 ),
                                                 Text(
                                                   'Toko: ${produk.namaToko}',
@@ -696,11 +703,87 @@ class _HomePageState extends State<HomePage> {
                           }
                         },
                       ),
-                      
 
+                      // === TOMBOL LOGOUT ===
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0,
+                          vertical: 40.0,
+                        ),
+                        child: Center(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red.shade400,
+                              foregroundColor: Colors.white,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 50,
+                                vertical: 15,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              elevation: 2,
+                            ),
+                            onPressed: () async {
+                              // Tampilkan dialog konfirmasi
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text("Konfirmasi Logout"),
+                                    content: Text(
+                                      "Apakah Anda yakin ingin logout?",
+                                    ),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: Text("Batal"),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                      TextButton(
+                                        child: Text(
+                                          "Logout",
+                                          style: TextStyle(color: Colors.red),
+                                        ),
+                                        onPressed: () async {
+                                          // Tutup dialog
+                                          Navigator.of(context).pop();
+
+                                          // Panggil fungsi logout dari AuthProvider
+                                          await Provider.of<AuthService>(
+                                            context,
+                                            listen: false,
+                                          ).logout();
+
+                                          // Arahkan ke halaman login dan hapus semua halaman sebelumnya
+                                          if (mounted) {
+                                            Navigator.of(
+                                              context,
+                                            ).pushAndRemoveUntil(
+                                              MaterialPageRoute(
+                                                builder:
+                                                    (context) => LoginPage(),
+                                              ),
+                                              (Route<dynamic> route) => false,
+                                            );
+                                          }
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                            child: Text('Logout'),
+                          ),
+                        ),
+                      ),
+
+                      // === AKHIR TOMBOL LOGOUT ===
                       const SizedBox(
                         height: 70,
-                      ), // Tambahkan space di bawah untuk bottom navigation bar
+                      ), // Space untuk bottom navigation bar
                     ],
                   ),
                 ),
@@ -708,7 +791,7 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
 
-          // Header (Sticky Title)
+          // Header sticky di atas
           Positioned(
             top: 0,
             left: 0,
@@ -723,7 +806,6 @@ class _HomePageState extends State<HomePage> {
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Row(
                     children: [
@@ -731,15 +813,6 @@ class _HomePageState extends State<HomePage> {
                         'assets/Desain tanpa judul.png',
                         width: 28,
                         height: 28,
-                        errorBuilder: (_, __, ___) {
-                          return const CircleAvatar(
-                            backgroundColor: Color(0xFF0F2D52),
-                            child: Text(
-                              'S',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          );
-                        },
                       ),
                       const SizedBox(width: 8),
                       const Text(
@@ -760,7 +833,7 @@ class _HomePageState extends State<HomePage> {
                           color: Colors.white,
                         ),
                         onPressed: () {
-                          // TODO: Arahkan ke halaman keranjang
+                          /* TODO: Arahkan ke halaman chat */
                         },
                       ),
                       IconButton(
@@ -769,7 +842,7 @@ class _HomePageState extends State<HomePage> {
                           color: Colors.white,
                         ),
                         onPressed: () {
-                          // TODO: Arahkan ke halaman keranjang
+                          /* TODO: Arahkan ke halaman keranjang */
                         },
                       ),
                       IconButton(
@@ -778,7 +851,7 @@ class _HomePageState extends State<HomePage> {
                           color: Colors.white,
                         ),
                         onPressed: () {
-                          // TODO: Arahkan ke halaman profil
+                          /* TODO: Arahkan ke halaman profil */
                         },
                       ),
                     ],

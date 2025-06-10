@@ -47,7 +47,7 @@ class ProductCard extends StatelessWidget {
                 width: double.infinity,
                 child: Image.network(
                   produk.gambarProduk != null && produk.gambarProduk!.isNotEmpty
-                      ? 'http://172.20.10.5:8000/storage/${produk.gambarProduk}'
+                      ? 'http://192.168.18.14:8000/storage/${produk.gambarProduk}'
                       : 'https://via.placeholder.com/300x400',
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
@@ -116,7 +116,7 @@ class _ProductPageState extends State<ProductPage> {
   Future<void> fetchProducts() async {
     try {
       final response = await http.get(
-        Uri.parse('http://172.20.10.5:8000/api/produk'),
+        Uri.parse('http://192.168.18.14:8000/api/produk'),
       );
 
       if (response.statusCode == 200) {
