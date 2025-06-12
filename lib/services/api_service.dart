@@ -104,6 +104,44 @@ class ApiService {
       rethrow;
     }
   }
+  Future<Map<String, dynamic>> register({
+    required String name,
+    required String email,
+    required String namaBelakang,
+    required String password,
+    String? nohp,
+  }) async {
+    final body = {
+      'name': name,
+      'email': email,
+      'password': password,
+      'namabelakang': namaBelakang, // Pastikan ini sesuai dengan field di backend
+      'nohp': nohp ?? '', // Kirim string kosong jika nohp null
+    };
+    // Panggil _post untuk mengirim data ke endpoint 'register'
+    return await _post('register', body);
+  }
+
+  /// Fungsi utilitas untuk POST request yang mengembalikan Map<String, dynamic>
+  Future<Map<String, dynamic>> _post(String endpoint, Map<String, dynamic> body) async {
+    final url = Uri.parse('$baseUrl/$endpoint');
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: json.encode(body),
+    );
+    final responseData = json.decode(response.body);
+    if (response.statusCode == 200 && (responseData['status'] == true || responseData['success'] == true)) {
+      return responseData;
+    } else {
+      throw HttpException(
+        responseData['message'] ?? 'Terjadi kesalahan pada $endpoint',
+      );
+    }
+  }
 
   /// Fungsi untuk Logout Pengguna
   Future<void> logout(String token) async {

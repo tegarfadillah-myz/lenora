@@ -37,25 +37,26 @@ class AuthService with ChangeNotifier {
     }
   }
 
-  // Future<void> register({
-  //   required String name,
-  //   required String email,
-  //   required String password,
-  //   String? nohp,
-  // }) async {
-  //   try {
-  //     await _apiService.register(
-  //       name: name,
-  //       email: email,
-  //       password: password,
-  //       nohp: nohp,
-  //     );
-  //     // Setelah registrasi berhasil, langsung login
-  //     await login(email, password);
-  //   } catch (e) {
-  //     rethrow;
-  //   }
-  // }
+  Future<void> register({
+    required String name,
+    required String email,
+    required String password,
+    String? nohp, required String namaBelakang,
+  }) async {
+    try {
+      await _apiService.register(
+        name: name,
+        email: email,
+        password: password,
+        nohp: nohp,
+        namaBelakang: '',
+      );
+      // Setelah registrasi berhasil, langsung login
+      await login(email, password);
+    } catch (e) {
+      rethrow;
+    }
+  }
 
   Future<void> logout() async {
     if (_token != null) {

@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:lenora/services/auth_service.dart';
+import 'package:lenora/views/auth/register_page.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
@@ -125,23 +126,23 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                 const SizedBox(height: 16),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.center,
-                //   children: [
-                //     const Text("Belum punya akun?"),
-                //     TextButton(
-                //       onPressed: () {
-                //         Navigator.pushReplacement(
-                //           context,
-                //           MaterialPageRoute(
-                //             builder: (context) => const RegisterPage(),
-                //           ),
-                //         );
-                //       },
-                //       child: const Text('Daftar di sini'),
-                //     ),
-                //   ],
-                // ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text("Belum punya akun?"),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const RegisterPage(),
+                          ),
+                        );
+                      },
+                      child: const Text('Daftar di sini'),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),

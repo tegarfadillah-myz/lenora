@@ -121,6 +121,13 @@ class ProductCard extends StatelessWidget {
                     style: const TextStyle(fontSize: 12, color: Colors.black54),
                   ),
                 ),
+                GestureDetector(
+                  onTap: onTap,
+                  child: Text(
+                    'Stok: ${produk.stok}',
+                    style: const TextStyle(fontSize: 12, color: Colors.black54),
+                  ),
+                ),
                 const SizedBox(height: 8),
                 // DIUBAH: Harga dan Tombol Keranjang dalam satu baris
                 Row(
