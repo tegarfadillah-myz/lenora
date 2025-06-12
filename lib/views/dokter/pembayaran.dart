@@ -3,7 +3,7 @@ import '../../models/dokter.dart';
 
 class BayarDokterPage extends StatefulWidget {
   final Dokter dokter;
-  final String baseUrl = 'http://192.168.18.14:8000';
+  final String baseUrl = 'http://172.20.10.5:8000';
 
   const BayarDokterPage({Key? key, required this.dokter}) : super(key: key);
 

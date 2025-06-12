@@ -47,7 +47,7 @@ class DoctorCard extends StatelessWidget {
                 width: double.infinity,
                 child: Image.network(
                   dokter.foto.isNotEmpty
-                      ? 'http://192.168.18.14:8000/storage/${dokter.foto}'
+                      ? 'http://172.20.10.5:8000/storage/${dokter.foto}'
                       : 'https://via.placeholder.com/300x400',
                   fit: BoxFit.cover,
                   loadingBuilder: (context, child, loadingProgress) {
@@ -163,7 +163,7 @@ class _DoctorPageState extends State<DoctorPage> {
     try {
       final response = await http.get(
 
-        Uri.parse('http://192.168.18.14:8000/api/dokter'),
+        Uri.parse('http://172.20.10.5:8000/api/dokter'),
 
       );
 

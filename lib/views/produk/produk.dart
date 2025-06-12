@@ -44,7 +44,7 @@ class ProductCard extends StatelessWidget {
   // Helper untuk membangun URL gambar
   String _buildImageUrl(String? imagePath) {
     if (imagePath != null && imagePath.isNotEmpty) {
-      return 'http://192.168.18.14:8000/storage/$imagePath';
+      return 'http://172.20.10.5:8000/storage/$imagePath';
     }
     return 'https://via.placeholder.com/300x400';
   }
@@ -191,7 +191,7 @@ class _ProductPageState extends State<ProductPage> {
   Future<void> fetchProducts() async {
     try {
       final response = await http.get(
-        Uri.parse('http://192.168.18.14:8000/api/produk'),
+        Uri.parse('http://172.20.10.5:8000/api/produk'),
       );
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = jsonDecode(response.body);

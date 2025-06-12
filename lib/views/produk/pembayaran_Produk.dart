@@ -261,7 +261,7 @@ class _BayarProdukPageState extends State<BayarProdukPage>
                     child: Image.network(
                       widget.produk.gambarProduk != null &&
                               widget.produk.gambarProduk!.isNotEmpty
-                          ? 'http://192.168.18.14:8000/storage/${widget.produk.gambarProduk}'
+                          ? 'http://172.20.10.5:8000/storage/${widget.produk.gambarProduk}'
                           : 'https://via.placeholder.com/300x400',
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {

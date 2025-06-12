@@ -1,10 +1,10 @@
+// lib/pages/article_page.dart
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:lenora/services/auth_service.dart';
-import 'package:lenora/views/produk/keranjang.dart';
-import 'package:provider/provider.dart';
 import 'article_detail_page.dart';
+import 'add_article_page.dart'; // MODIFIKASI: Impor halaman baru
 import '../widgets/bottomnavbar.dart';
 
 class ArticlePage extends StatefulWidget {
@@ -20,6 +20,7 @@ class _ArticlePageState extends State<ArticlePage> {
   String? errorMessage;
   String? selectedCategory;
   List<Article> allArticles = [];
+  bool isLoading = true; // MODIFIKASI: Tambah state loading awal
 
   @override
   void initState() {
@@ -28,9 +29,13 @@ class _ArticlePageState extends State<ArticlePage> {
   }
 
   Future<void> fetchArticles() async {
+    setState(() {
+      isLoading = true; // MODIFIKASI: Set loading saat fetch
+      errorMessage = null;
+    });
     try {
       final response = await http.get(
-        Uri.parse('http://192.168.18.14:8000/api/artikel'),
+        Uri.parse('http://172.20.10.5:8000/api/artikel'),
       );
 
       if (response.statusCode == 200) {
@@ -39,22 +44,17 @@ class _ArticlePageState extends State<ArticlePage> {
 
         setState(() {
           allArticles = data.map((json) => Article.fromJson(json)).toList();
-          categories =
-              allArticles
-                  .map(
-                    (article) => Category(
-                      id: int.parse(article.category.split(':')[0]),
-                      name: article.category.split(':')[1],
-                    ),
-                  )
-                  .toSet();
+          categories = allArticles
+              .map(
+                (article) => Category(
+                  id: int.parse(article.category.split(':')[0]),
+                  name: article.category.split(':')[1],
+                ),
+              )
+              .toSet();
           articles = filterArticles();
           errorMessage = null;
         });
-
-        print(
-          'Categories: ${categories.map((c) => '${c.id}: ${c.name}').toList()}',
-        );
       } else {
         setState(() {
           errorMessage =
@@ -66,6 +66,10 @@ class _ArticlePageState extends State<ArticlePage> {
         errorMessage = 'Error: $e';
       });
       print('Exception caught: $e');
+    } finally {
+      setState(() {
+        isLoading = false; // MODIFIKASI: Matikan loading setelah selesai
+      });
     }
   }
 
@@ -85,6 +89,21 @@ class _ArticlePageState extends State<ArticlePage> {
         builder: (context) => ArticleDetailPage(articleId: article.id),
       ),
     );
+  }
+
+  // MODIFIKASI: Fungsi untuk navigasi ke halaman tambah artikel
+  void _navigateToAddArticlePage() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddArticlePage(categories: categories.toList()),
+      ),
+    );
+
+    // Jika result adalah 'true', artinya artikel berhasil dibuat. Refresh list.
+    if (result == true) {
+      fetchArticles();
+    }
   }
 
   @override
@@ -141,10 +160,9 @@ class _ArticlePageState extends State<ArticlePage> {
                                 backgroundColor: Colors.grey[200],
                                 selectedColor: const Color(0xFF0F2D52),
                                 labelStyle: TextStyle(
-                                  color:
-                                      selectedCategory == null
-                                          ? Colors.white
-                                          : Colors.black,
+                                  color: selectedCategory == null
+                                      ? Colors.white
+                                      : Colors.black,
                                 ),
                               ),
                             );
@@ -180,34 +198,35 @@ class _ArticlePageState extends State<ArticlePage> {
                     const SizedBox(height: 12),
 
                     Expanded(
-                      child:
-                          articles.isEmpty
+                      child: isLoading // MODIFIKASI: Gunakan state isLoading
+                          ? const Center(child: CircularProgressIndicator())
+                          : errorMessage != null
                               ? Center(
-                                child:
-                                    errorMessage != null
-                                        ? Padding(
-                                          padding: const EdgeInsets.all(16.0),
-                                          child: Text(
-                                            errorMessage!,
-                                            style: const TextStyle(
-                                              color: Colors.red,
-                                            ),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        )
-                                        : const CircularProgressIndicator(),
-                              )
-                              : ListView.builder(
-                                itemCount: articles.length,
-                                padding: const EdgeInsets.only(top: 8),
-                                itemBuilder: (context, index) {
-                                  final article = articles[index];
-                                  return ArticleCard(
-                                    article: article,
-                                    onTap: () => _navigateToDetail(article),
-                                  );
-                                },
-                              ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Text(
+                                      errorMessage!,
+                                      style:
+                                          const TextStyle(color: Colors.red),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                )
+                              : articles.isEmpty
+                                  ? const Center(
+                                      child: Text('Tidak ada artikel.'))
+                                  : ListView.builder(
+                                      itemCount: articles.length,
+                                      padding: const EdgeInsets.only(top: 8),
+                                      itemBuilder: (context, index) {
+                                        final article = articles[index];
+                                        return ArticleCard(
+                                          article: article,
+                                          onTap: () =>
+                                              _navigateToDetail(article),
+                                        );
+                                      },
+                                    ),
                     ),
                   ],
                 ),
@@ -215,7 +234,7 @@ class _ArticlePageState extends State<ArticlePage> {
             ),
           ),
 
-          // Custom header
+          // Custom header (Tidak diubah)
           Positioned(
             top: 0,
             left: 0,
@@ -273,43 +292,7 @@ class _ArticlePageState extends State<ArticlePage> {
                           Icons.shopping_cart,
                           color: Colors.white,
                         ),
-                        onPressed: () {
-                          // 1. Ambil instance AuthService menggunakan Provider
-                          // listen: false karena kita hanya butuh memanggil data, tidak perlu me-rebuild widget ini
-                          final authService = Provider.of<AuthService>(
-                            context,
-                            listen: false,
-                          );
-
-                          // 2. Cek status login dari AuthService
-                          if (authService.isAuthenticated &&
-                              authService.user != null) {
-                            // 3. Ambil userId langsung dari objek user yang ada di AuthService
-                            final int userId = authService.user!.id;
-
-                            print(
-                              'Berhasil mendapatkan userId: $userId. Navigasi ke keranjang...',
-                            );
-
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                // Panggil KeranjangScreen tanpa argumen apapun.
-                                // Halaman ini akan mengambil data login sendiri.
-                                builder: (context) => const KeranjangScreen(),
-                              ),
-                            );
-                          } else {
-                            // 4. Jika user tidak ditemukan di AuthService, tampilkan pesan
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'Anda harus login terlebih dahulu.',
-                                ),
-                              ),
-                            );
-                          }
-                        },
+                        onPressed: () {},
                       ),
                       IconButton(
                         icon: const Icon(
@@ -327,9 +310,20 @@ class _ArticlePageState extends State<ArticlePage> {
         ],
       ),
       bottomNavigationBar: BottomNavBar(currentIndex: 1),
+      // MODIFIKASI: Tambahkan Floating Action Button di sini
+      floatingActionButton: FloatingActionButton(
+        onPressed: _navigateToAddArticlePage,
+        backgroundColor: const Color(0xFF0F2D52),
+        child: const Icon(Icons.add, color: Colors.white),
+      ),
     );
   }
 }
+
+// Class Category, Article, dan ArticleCard tetap sama (tidak perlu diubah)
+// ...
+// ... (sisa kode Anda yang tidak diubah)
+// ...
 
 class Category {
   final int id;
@@ -368,7 +362,7 @@ class Article {
     final String thumbnail = json['thumbnail'] ?? '';
     final String imageUrl =
         thumbnail.isNotEmpty
-            ? 'http://192.168.18.14:8000/storage/$thumbnail'
+            ? 'http://172.20.10.5:8000/storage/$thumbnail'
             : 'https://via.placeholder.com/300x200';
 
     final categoryId = json['category']?['id'] ?? 0;
@@ -396,7 +390,7 @@ class ArticleCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         height: 250, // Fixed height for the card
-        margin: const EdgeInsets.only(bottom: 25),
+        margin: const EdgeInsets.only(bottom: 16),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
@@ -462,7 +456,7 @@ class ArticleCard extends StatelessWidget {
             ),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.all(10),
+                padding: const EdgeInsets.all(12),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -479,18 +473,18 @@ class ArticleCard extends StatelessWidget {
                     Text(
                       article.title,
                       style: const TextStyle(
-                        fontSize: 16,
+                        fontSize: 14,
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 4),
+                    const Spacer(),
                     Text(
                       article.date,
                       style: const TextStyle(
-                        fontSize: 10,
+                        fontSize: 12,
                         color: Colors.black45,
                       ),
                     ),

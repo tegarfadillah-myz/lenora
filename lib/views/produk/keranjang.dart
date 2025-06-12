@@ -936,7 +936,7 @@ class _KeranjangScreenState extends State<KeranjangScreen>
 
   String _buildImageUrl(String? imagePath) {
     if (imagePath != null && imagePath.isNotEmpty) {
-      return 'http://192.168.18.14:8000/storage/$imagePath';
+      return 'http://172.20.10.5:8000/storage/$imagePath';
     }
     return 'https://via.placeholder.com/150';
   }
